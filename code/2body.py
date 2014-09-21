@@ -23,17 +23,18 @@ def init_opengl(width, height):
 class Particle:
     def __init__(self):
         # generate random start position
-        self.x = random.random() * 2 - 5
-        self.y = random.random() * 2 - 5
-        self.z = random.random() * -10
+        mag = 3
+        self.x = ((random.randrange(-100,100))/100)*mag
+        self.y = ((random.randrange(-100,100))/100)*mag
+        self.z = ((random.randrange(-100,100))/100)*mag
 
         # generate random start velocity
-        magnitude = 0.1
-        self.vx = (random.random() - 0.5)*magnitude
-        self.vy = (random.random() - 0.5)*magnitude
-        self.vz = (random.random() - 0.5)*magnitude
+        magnitude = 0.01
+        self.vx = ((random.randrange(-100,100))/100)*magnitude
+        self.vy = ((random.randrange(-100,100))/100)*magnitude
+        self.vz = ((random.randrange(-100,100))/100)*magnitude
 
-        self.mass = (random.random())*1000000;
+        self.mass = (random.random())*1000000000;
         self.ax = 0;
         self.ay = 0;
         self.az = 0;
@@ -44,7 +45,7 @@ class Particle:
         #glColor3f(1,1,1)
         #glColor3f(math.sqrt(math.pow(self.vx,2)), math.sqrt(math.pow(self.vy,2)), math.sqrt(math.pow(self.vz,2)))
         #glVertex3f(self.x, self.y, self.z)
-        glPointSize((self.mass/1000000)*10)
+        glPointSize((self.mass/1000000000)*10)
         glBegin(GL_POINTS)
         glColor3f(1,1,1)
         glVertex3f(self.x, self.y, -10);
@@ -64,6 +65,8 @@ class Particle:
         self.vy += self.ay * dt
         self.vz += self.az * dt
 
+        print(self.az)
+
         # update position using velocity vector
         self.x += self.vx * dt
         self.y += self.vy * dt
@@ -77,21 +80,21 @@ class Particle:
         self.ax = 0;
         for p in particles:
             if(p != self):
-                self.ax = self.ax + p.mass*(p.x - self.x)/math.pow(math.fabs(p.x - self.x),3)
+                self.ax = self.ax + p.mass*(p.x - self.x)/max(0.00000001, math.pow(math.fabs(p.x - self.x),3))
 
         self.ax = G*self.ax;
 
         self.ay = 0;
         for p in particles:
             if(p != self):
-                self.ay = self.ay + p.mass*(p.y - self.y)/math.pow(math.fabs(p.y - self.y),3)
+                self.ay = self.ay + p.mass*(p.y - self.y)/max(0.00000001,math.pow(math.fabs(p.y - self.y),3))
 
         self.ay = G*self.ay;
         
         self.az = 0;
         for p in particles:
             if(p != self):
-                self.az = self.az + p.mass*(p.z - self.z)/math.pow(math.fabs(p.z - self.z),3)
+                self.az = self.az + p.mass*(p.z - self.z)/max(0.00000001,math.pow(math.fabs(p.z - self.z),3))
 
         self.az = G*self.az;
 
@@ -107,7 +110,7 @@ def main():
 
     # generate some particles
     particles = []
-    for i in xrange(10):
+    for i in xrange(2):
         particles.append(Particle())
 
     while True:
