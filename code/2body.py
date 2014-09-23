@@ -23,16 +23,16 @@ def init_opengl(width, height):
 class Particle:
     def __init__(self):
         # generate random start position
-        mag = 3
-        self.x = ((random.randrange(-100,100))/100)*mag
-        self.y = ((random.randrange(-100,100))/100)*mag
-        self.z = ((random.randrange(-100,100))/100)*mag
+        mag = 10
+        self.x = ((random.randrange(-100,100))/100.0)*mag
+        self.y = ((random.randrange(-100,100))/100.0)*mag
+        self.z = ((random.randrange(-100,100))/100.0)*mag
 
         # generate random start velocity
         magnitude = 0.01
-        self.vx = ((random.randrange(-100,100))/100)*magnitude
-        self.vy = ((random.randrange(-100,100))/100)*magnitude
-        self.vz = ((random.randrange(-100,100))/100)*magnitude
+        self.vx = ((random.randrange(-100,100))/100.0)*magnitude
+        self.vy = ((random.randrange(-100,100))/100.0)*magnitude
+        self.vz = ((random.randrange(-100,100))/100.0)*magnitude
 
         self.mass = (random.random())*1000000000;
         self.ax = 0;
@@ -56,7 +56,6 @@ class Particle:
 
     def update(self, particles):
         dt = 0.1
-        gravity_strength = 0.5
 
         self.acceleration(particles)
 
@@ -78,25 +77,20 @@ class Particle:
         G = 0.0000000000066;
 
         self.ax = 0;
-        for p in particles:
-            if(p != self):
-                self.ax = self.ax + p.mass*(p.x - self.x)/max(0.00000001, math.pow(math.fabs(p.x - self.x),3))
-
-        self.ax = G*self.ax;
-
         self.ay = 0;
-        for p in particles:
-            if(p != self):
-                self.ay = self.ay + p.mass*(p.y - self.y)/max(0.00000001,math.pow(math.fabs(p.y - self.y),3))
-
-        self.ay = G*self.ay;
-        
         self.az = 0;
         for p in particles:
             if(p != self):
-                self.az = self.az + p.mass*(p.z - self.z)/max(0.00000001,math.pow(math.fabs(p.z - self.z),3))
+                r = math.sqrt((p.x - self.x)**2 + (p.y - self.y)**2 + (p.z - self.z)**2)
+                self.ax = self.ax + p.mass*((p.x - self.x)/max(0.00000001, math.pow(r,3)))
+                self.ay = self.ay + p.mass*((p.y - self.y)/max(0.00000001, math.pow(r,3)))
+                self.az = self.az + p.mass*((p.z - self.z)/max(0.00000001, math.pow(r,3)))
 
+        self.ax = G*self.ax;
+        self.ay = G*self.ay;
         self.az = G*self.az;
+
+        
 
 
 def main():
@@ -110,7 +104,7 @@ def main():
 
     # generate some particles
     particles = []
-    for i in xrange(2):
+    for i in xrange(20):
         particles.append(Particle())
 
     while True:
