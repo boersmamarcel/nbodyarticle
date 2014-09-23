@@ -69,6 +69,7 @@ A world famous problem is the two body problem, most commonly known as the sun -
 background etc
 \subsection{Newton's law}
 \begin{equation}
+    \label{eq:newtongravity}
  F = G\frac{m_1m_2}{r^2}
 \end{equation}
 With G as a gravitational constant and F as the force in Newton and $m_1,m_2$ the mass of the two systems in kg and $r$ is the distance between the center of the two bodies (see figure xx). 
@@ -114,10 +115,22 @@ force times direction (unit vector) see albana notes on slide
 Calculate $a_i$ for each body i.
 
 
-
+If we want to know the force of body $p$ on body $c$ we can use Newton's law of gravitation, see equation~\ref{eq:newtongravity}.  We can fill in the masses of bodies $p,c$ using the fact that $F_c = m_c a_c$ we obtain
+\begin{equation}
+    \begin{split}
+     a_c m_c = G\frac{m_c m_p}{r^2} \\
+     a_c = G\frac{m_p}{r^2} \\
+    \end{split}
+\end{equation}
+Now that we have derived the acceleration in terms of the mass of $p$ and the distance between the bodies $r$, we can use this calculate the acceleration of body $c$. The change of position i.e. distance of body $c$ at time $\delta t$ is given by
+\begin{equation}
+    \frac{d^2}{dt^2} r_c = G \frac{m_p}{r^2}
+\end{equation}
+So the new position can be derived by taking the position at time $t=0$ plus the distance traveled during $\delta t$. This can be obtained by taking the double integral of the acceleration. This can be solved analytically when only considering two bodies. If you consider $n \geq 3$ bodies it becomes unsolvable analytically. 
 \subsection{Discrete Approximation}
 Approximation of Newton's law, Kepler orbit. Possible accuracy problems, e.g. sensitivity analysis.
-
+\\\\
+Possible checks for simulation correctness: law of momentum conservation, law of energy conservation, unintended orbit change
 \subsection{Algorithms}
 
 \subsection{Implementation}
