@@ -1,7 +1,9 @@
 #include <iostream>
+#include <vector>
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 #include "SDL.h"
+#include "particle.h"
 
 SDL_Window* initSDLAndOpenGL(int width, int height, bool vsync, bool fullscreen)
 {
@@ -39,8 +41,8 @@ SDL_Window* initSDLAndOpenGL(int width, int height, bool vsync, bool fullscreen)
     }
     glClearColor(0.1, 0.1, 0.15, 0);
 
-    glClearDepth(1);
-    glDepthFunc(GL_LESS);
+    //glClearDepth(1);
+    //glDepthFunc(GL_LESS);
 
     glViewport(0, 0, width, height);
 
@@ -49,6 +51,7 @@ SDL_Window* initSDLAndOpenGL(int width, int height, bool vsync, bool fullscreen)
     gluPerspective(90, float(width)/height, 0.1, 100.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    glPointSize(2);
 
 
     GLenum error = glGetError();
@@ -76,11 +79,37 @@ int main(int argc, char* argv[])
 
     SDL_Window* surface = initSDLAndOpenGL(screenWidth, screenHeight, vsync,
             fullscreen);
+
+    std::vector<Particle> particles;
+    for (int i = 0; i < 2000; i++)
+    {
+        particles.push_back(Particle());
+    }
+
+
     bool running = true;
+    float timestep = 0.1;
+    float move = 0;
     while (running)
     {
+        //run simulation
+        for(auto& particle: particles)
+        {
+            particle.update(timestep);
+        }
+
+        //render universe
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glLoadIdentity();
+        glTranslatef(0, 0, -30);
+        for(auto& particle: particles)
+        {
+            particle.render();
+        }
         SDL_GL_SwapWindow(surface);
+
+
+        //check input
         SDL_Event event;    
         while (SDL_PollEvent(&event)) 
         {

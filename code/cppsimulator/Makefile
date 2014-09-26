@@ -1,6 +1,6 @@
 SHELL = bash
 
-OBJS = main 
+OBJS = main particle vec
 
 BUILDPATH = build/
 INCLUDES = 
