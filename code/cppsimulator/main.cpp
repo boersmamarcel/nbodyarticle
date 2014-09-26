@@ -89,6 +89,9 @@ int main(int argc, char* argv[])
 
     bool running = true;
     float timestep = 0.1;
+
+    float yRotate = 0;
+    float xRotate = 0;
     while (running)
     {
         //run simulation
@@ -105,6 +108,8 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glLoadIdentity();
         glTranslatef(0, 0, -30);
+        glRotatef(yRotate, 0,1,0);
+        glRotatef(xRotate, 1,0,0);
         for(auto& particle: particles)
         {
             particle.render();
@@ -119,6 +124,16 @@ int main(int argc, char* argv[])
             if (event.type == SDL_QUIT)
             {
                 running = false;
+            }
+            else if (event.type == SDL_MOUSEMOTION)
+            {
+                if (event.motion.state & SDL_BUTTON(1))
+                {
+                    yRotate += event.motion.xrel * 0.5;
+                    xRotate += event.motion.yrel * 0.5;
+                    if (xRotate > 90) xRotate = 90;
+                    if (xRotate < -90) xRotate = -90;
+                }
             }
         }
     }
