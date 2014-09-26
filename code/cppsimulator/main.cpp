@@ -89,10 +89,13 @@ int main(int argc, char* argv[])
 
     bool running = true;
     float timestep = 0.1;
-    float move = 0;
     while (running)
     {
         //run simulation
+        for(auto& particle: particles)
+        {
+            particle.calculateAcceleration(particles, timestep);
+        }
         for(auto& particle: particles)
         {
             particle.update(timestep);

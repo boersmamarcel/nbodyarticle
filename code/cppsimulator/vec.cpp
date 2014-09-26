@@ -1,6 +1,8 @@
 #include "vec.h"
 
 #include <cstdlib>
+#include <cmath>
+#include <iostream>
 
 Vec3D::Vec3D():
    _x(0), _y(0), _z(0) 
@@ -20,6 +22,27 @@ Vec3D Vec3D::createRandom(Vec3D min, Vec3D max)
     return Vec3D(x, y, z);
 }
 
+Vec3D Vec3D::operator+(const Vec3D& vec) const
+{
+    float x = _x + vec._x;
+    float y = _y + vec._y;
+    float z = _z + vec._z;
+    return Vec3D(x, y, z);
+}
+
+Vec3D Vec3D::operator-(const Vec3D& vec) const
+{
+    float x = _x - vec._x;
+    float y = _y - vec._y;
+    float z = _z - vec._z;
+    return Vec3D(x, y, z);
+}
+
+float Vec3D::length()
+{
+    return sqrt(_x*_x + _y*_y + _z*_z);
+}
+
 Vec3D Vec3D::createRandom(float min, float max)
 {
     return createRandom(Vec3D(min, min, min), Vec3D(max, max, max));
@@ -29,6 +52,11 @@ Vec3D Vec3D::createRandom(float min, float max)
 Vec3D Vec3D::operator*(float scalar)
 {
     return Vec3D(_x*scalar, _y*scalar, _z*scalar);
+}
+
+Vec3D Vec3D::operator/(float scalar)
+{
+    return Vec3D(_x/scalar, _y/scalar, _z/scalar);
 }
 
 Vec3D& Vec3D::operator+=(const Vec3D& vec)
