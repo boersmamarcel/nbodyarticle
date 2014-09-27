@@ -18,7 +18,7 @@ SDL_Window* initSDLAndOpenGL(int width, int height, bool vsync, bool fullscreen)
     SDL_Window* screen;
     if (fullscreen)
     {
-        screen = SDL_CreateWindow("AHN2 Viewer",
+        screen = SDL_CreateWindow("N-Body simulator",
                 SDL_WINDOWPOS_UNDEFINED,
                 SDL_WINDOWPOS_UNDEFINED,
                 width, height,
@@ -26,7 +26,7 @@ SDL_Window* initSDLAndOpenGL(int width, int height, bool vsync, bool fullscreen)
     }
     else
     {
-        screen = SDL_CreateWindow("AHN2 Viewer",
+        screen = SDL_CreateWindow("N-Body simulator",
                 SDL_WINDOWPOS_UNDEFINED,
                 SDL_WINDOWPOS_UNDEFINED,
                 width, height,
