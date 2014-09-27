@@ -92,6 +92,7 @@ int main(int argc, char* argv[])
 
     float yRotate = 0;
     float xRotate = 0;
+    float distance = -30;
     while (running)
     {
         //run simulation
@@ -107,9 +108,9 @@ int main(int argc, char* argv[])
         //render universe
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glLoadIdentity();
-        glTranslatef(0, 0, -30);
-        glRotatef(yRotate, 0,1,0);
+        glTranslatef(0, 0, distance);
         glRotatef(xRotate, 1,0,0);
+        glRotatef(yRotate, 0,1,0);
         for(auto& particle: particles)
         {
             particle.render();
@@ -134,6 +135,10 @@ int main(int argc, char* argv[])
                     if (xRotate > 90) xRotate = 90;
                     if (xRotate < -90) xRotate = -90;
                 }
+            }
+            else if (event.type == SDL_MOUSEWHEEL)
+            {
+                distance += 0.3* event.wheel.y;
             }
         }
     }
