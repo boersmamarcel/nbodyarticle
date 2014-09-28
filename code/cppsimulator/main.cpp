@@ -18,7 +18,7 @@ SDL_Window* initSDLAndOpenGL(int width, int height, bool vsync, bool fullscreen)
     SDL_Window* screen;
     if (fullscreen)
     {
-        screen = SDL_CreateWindow("AHN2 Viewer",
+        screen = SDL_CreateWindow("N-Body simulator",
                 SDL_WINDOWPOS_UNDEFINED,
                 SDL_WINDOWPOS_UNDEFINED,
                 width, height,
@@ -26,7 +26,7 @@ SDL_Window* initSDLAndOpenGL(int width, int height, bool vsync, bool fullscreen)
     }
     else
     {
-        screen = SDL_CreateWindow("AHN2 Viewer",
+        screen = SDL_CreateWindow("N-Body simulator",
                 SDL_WINDOWPOS_UNDEFINED,
                 SDL_WINDOWPOS_UNDEFINED,
                 width, height,
@@ -89,10 +89,17 @@ int main(int argc, char* argv[])
 
     bool running = true;
     float timestep = 0.1;
-    float move = 0;
+
+    float yRotate = 0;
+    float xRotate = 0;
+    float distance = -30;
     while (running)
     {
         //run simulation
+        for(auto& particle: particles)
+        {
+            particle.calculateAcceleration(particles, timestep);
+        }
         for(auto& particle: particles)
         {
             particle.update(timestep);
@@ -101,7 +108,9 @@ int main(int argc, char* argv[])
         //render universe
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glLoadIdentity();
-        glTranslatef(0, 0, -30);
+        glTranslatef(0, 0, distance);
+        glRotatef(xRotate, 1,0,0);
+        glRotatef(yRotate, 0,1,0);
         for(auto& particle: particles)
         {
             particle.render();
@@ -116,6 +125,20 @@ int main(int argc, char* argv[])
             if (event.type == SDL_QUIT)
             {
                 running = false;
+            }
+            else if (event.type == SDL_MOUSEMOTION)
+            {
+                if (event.motion.state & SDL_BUTTON(1))
+                {
+                    yRotate += event.motion.xrel * 0.5;
+                    xRotate += event.motion.yrel * 0.5;
+                    if (xRotate > 90) xRotate = 90;
+                    if (xRotate < -90) xRotate = -90;
+                }
+            }
+            else if (event.type == SDL_MOUSEWHEEL)
+            {
+                distance += 0.3* event.wheel.y;
             }
         }
     }

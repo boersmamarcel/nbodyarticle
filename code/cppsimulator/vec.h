@@ -9,11 +9,15 @@ class Vec3D
         static Vec3D createRandom(Vec3D min, Vec3D max);
         static Vec3D createRandom(float min, float max);
         Vec3D operator*(float scalar);
+        Vec3D operator/(float scalar);
+        Vec3D operator+(const Vec3D& vec) const;
+        Vec3D operator-(const Vec3D& vec) const;
+        float length();
 
         Vec3D& operator+=(const Vec3D& vec);
-        float x() {return _x;}
-        float y() {return _y;}
-        float z() {return _z;}
+        float x() const {return _x;}
+        float y() const {return _y;}
+        float z() const {return _z;}
     private:
         float _x, _y, _z;
 };
