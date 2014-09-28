@@ -62,35 +62,57 @@
 \begin{document}
 \maketitle
 
-\section{Introduction (phenomena)}
-A world famous problem is the two body problem, most commonly known as the sun - earth problem.
+\section{Introduction}
+Commonly used technology in everyday life is supported by satellites, e.g. GPS in car navigation, Internet and pictures from Google Maps. 
+And with increasingly more satellites orbiting the earth it is important that we know that a new satellite will not crash into another.
+Or, in more general terms we need to know how objects orbiting other objects work such that we can launch more satellites.
 
-\section{Literature Study}
-background etc
-\subsection{Newton's law}
+Although, it is not a new problem, because we have been trying to analyze how planets orbit each other in our own solar system for quite while, there is still room for improvement.
+The analytical solution for orbiting planets are only purposed for 2-body system, while in reality we have to cope with N-body systems. Approximation methods can be used only calculating is intractable by hand. Hence, the use of computers is promising for solving N-body systems. However, using computers and approximation methods comes with different types of problems, i.e. how accurate is my approximation method as well as the physical limitations of computers in terms of floating point operations.
+
+This research is aims to provide insight in the approximation methods used for 2-body systems, i.e. how accurate is the simulation. 
+In section~\ref{sec:literature} the background of the analytical models used are explained and section~\ref{sec:methodology} introduces the algorithms as well a methods for benchmarking our approximation methods. The results are shown in section~\ref{sec:results} and section~\ref{sec:conclusion} our conclusion is discussed.
+
+\section{Background}
+\label{sec:literature}
+In pursuance of calculating the trajectory of a body it is necessary to know which forces interact with our body. Newton's seconds law, i.e. the rate of change is equal to the net force on a object, is used to describe the force on our object. And Newton's third law, i.e. action = - reaction, is used. 
+
+\subsection{Newton's laws}
+Newton's second law describes that the force on an object is equal to the change of momentum in time. Because we only consider constant mass systems this is equal to the mass times the acceleration of an object. Thus, if the object is accelerating there is an force on our object present. Knowing that the only possible object acting on our object are the other planets in the system we can modify the second law to derive the law of universal gravitation. Let the following equation be the force $F_p$ on object $p$ by object $c$ with mass $m_p,m_c$ respectively.   
 \begin{equation}
     \label{eq:newtongravity}
- F = G\frac{m_1m_2}{r^2}
+ F_p = G\frac{m_pm_c}{r^2}
 \end{equation}
-With G as a gravitational constant and F as the force in Newton and $m_1,m_2$ the mass of the two systems in kg and $r$ is the distance between the center of the two bodies (see figure xx). 
-Keplers problem? 
-\subsection{Kepler}
-Kepler problem, special case the Kepler orbit problem
+With $r$ as the euclidean distance between object $p,c$. Combining Newton's second law with the law of universal gravitation gives the acceleration $a_p$ of object $p$
+\begin{equation}
+    \label{eq:newtongravity}
+	a_p = G\frac{m_pm_c}{ m_pr^2}
+\end{equation}.
+The third law states that if there is a force $F_1$ then there also exists a force $F_2$ such that $F_2 = - F_1$. 
 
+In the next section a simple 2-body system is introduced for thorough understanding the approximation methods used in later sections.
 
 
 \section{Methodology}
-Assume that we have an initial velocity vector $\overrightarrow{v_t}$ for the body t with speed in both x and y direction.
-\begin{equation}
-	\overrightarrow{v_t} = \begin{bmatrix}
-								x_t \\
-								y_t
-							\end{bmatrix}
-\end{equation}
-For example we have a two body system with $p,c$ with an initial velocity vector, respectively, then
-\begin{equation}
-	v_p=\begin{bmatrix} v_x^p \\ v_y^p \end{bmatrix}, v_c=\begin{bmatrix} v_x^c \\ v_y^c \end{bmatrix}
-\end{equation}
+\label{sec:methodology}
+To understand the consequences of our approximation methods we first need to understand the analytical solution of a 2-body system. Next, we assume a simple two body system with an analytical solution and we will apply Newton's law to obtain the trajectory of our objects. Remark that this is special simple case designed to provided better understanding of orbiting objects, this is required to understand the effects of discrete approximation methods in our simulations. \\
+\indent Assume we have a 2 body system called Pluto-Charon system. Figure~\ref{fig:plutocharon} illustrates this system at a fixed time point $t$
+\begin{figure*}
+	\label{fig:plutocharon}
+\end{figure*}
+with both $x,y$ coordinates in our 2D space.
+
+% Assume that we have an initial velocity vector $\overrightarrow{v_t}$ for the body t with speed in both x and y direction.
+% \begin{equation}
+% 	\overrightarrow{v_t} = \begin{bmatrix}
+% 								x_t \\
+% 								y_t
+% 							\end{bmatrix}
+% \end{equation}
+% For example we have a two body system with $p,c$ with an initial velocity vector, respectively, then
+% \begin{equation}
+% 	v_p=\begin{bmatrix} v_x^p \\ v_y^p \end{bmatrix}, v_c=\begin{bmatrix} v_x^c \\ v_y^c \end{bmatrix}
+% \end{equation}
 We assume that the whole system has a constant velocity, in our case we assume zero velocity, hence the next equation must be equal to zero
 \begin{equation}
 	V = \frac{P}{M}	
@@ -128,14 +150,40 @@ Now that we have derived the acceleration in terms of the mass of $p$ and the di
 \end{equation}
 So the new position can be derived by taking the position at time $t=0$ plus the distance traveled during $\delta t$. This can be obtained by taking the double integral of the acceleration. This can be solved analytically when only considering two bodies. If you consider $n \geq 3$ bodies it becomes unsolvable analytically. 
 \subsection{Discrete Approximation}
-Approximation of Newton's law, Kepler orbit. Possible accuracy problems, e.g. sensitivity analysis.
-\\\\
+The N-body system for more than 2 bodies can not be solved analytically, hence we must use approximation methods to calculate the solution.
+We want to obtain the new positions of our bodies at time $t+1$ by using Newton's second law. We can approximate 
+
+\subsubsection{Taylor expansion}
+We want to approximate $a,v,x$ with Taylor expansions. 
+Because we want to approximate the calculation 
+Bounded error of Taylor approximation
+
+
+\subsubsection{Sensitivity analysis}
+because we use approximations we have sensitive systems etc....
+perturbations in input variables and output variables. i.e. positions of other objects are incorrect.
+Delta step influences sensitivity?....
+
+
+\subsubsection{Verify our approximation}
+Constraints check after each simulation round
 Possible checks for simulation correctness: law of momentum conservation, law of energy conservation, unintended orbit change
+
+
+
 \subsection{Algorithms}
+Algorithms in pseudo code:
+Taylor algorithm
+etc..
 
 \subsection{Implementation}
+attachment
 \section{Experimental Results}
+\label{sec:results}
+results
+
 \section{Conclusions}
+\label{sec:conclusion}
 
 \end{document}
 

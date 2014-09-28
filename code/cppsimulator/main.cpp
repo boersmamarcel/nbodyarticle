@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
             fullscreen);
 
     std::vector<Particle> particles;
-    for (int i = 0; i < 2000; i++)
+    for (int i = 0; i < 200000; i++)
     {
         particles.push_back(Particle());
     }

@@ -29,7 +29,7 @@ class Particle:
         self.z = ((random.randrange(-100,100))/100.0)*mag
 
         # generate random start velocity
-        magnitude = 0.01
+        magnitude = 0.5
         self.vx = ((random.randrange(-100,100))/100.0)*magnitude
         self.vy = ((random.randrange(-100,100))/100.0)*magnitude
         self.vz = ((random.randrange(-100,100))/100.0)*magnitude
@@ -55,7 +55,7 @@ class Particle:
         return self.mass;
 
     def update(self, particles):
-        dt = 0.1
+        dt = 0.01
 
         self.acceleration(particles)
 
@@ -64,7 +64,6 @@ class Particle:
         self.vy += self.ay * dt
         self.vz += self.az * dt
 
-        print(self.az)
 
         # update position using velocity vector
         self.x += self.vx * dt
