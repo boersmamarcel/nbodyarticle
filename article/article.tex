@@ -151,12 +151,37 @@ Now that we have derived the acceleration in terms of the mass of $p$ and the di
 So the new position can be derived by taking the position at time $t=0$ plus the distance traveled during $\delta t$. This can be obtained by taking the double integral of the acceleration. This can be solved analytically when only considering two bodies. If you consider $n \geq 3$ bodies it becomes unsolvable analytically. 
 \subsection{Discrete Approximation}
 The N-body system for more than 2 bodies can not be solved analytically, hence we must use approximation methods to calculate the solution.
-We want to obtain the new positions of our bodies at time $t+1$ by using Newton's second law. We can approximate 
+We want to obtain the new positions of our bodies at time $t+1$ by using Newton's second law. We can derive the next position by adding the distance traveled in time $\Delta t$ to the old position at $x_t$, i.e. $x_{t+1} = x_t + v_t*\Delta t$ wit $v_t$ as the speed at time $t$. Nonetheless, we do not know speed $v_t$ but this can be obtained by $v_t = v_t + a_t \Delta t$ and $a_t$ is known for our body. The next section describes an even more accurate approach for $x_t$.
 
 \subsubsection{Taylor expansion}
-We want to approximate $a,v,x$ with Taylor expansions. 
-Because we want to approximate the calculation 
-Bounded error of Taylor approximation
+If we want to approximate the values of, for example, formula $f(x)$ at point $a$ we can use a Taylor expansion defined as
+\begin{equation}
+    \label{eq:taylor}
+    \sum^\infty_{n=0} \frac{f^{(n)}(a)}{n!}(x-a)^n
+\end{equation}
+when we sum to infinity the new function will be the same as the original function $f(x)$. In our case we want to approximate the formulas $x(t), v(t), a(t)$ at points near $t$ and we can use equation~\ref{eq:taylor} to describe $x(t)$ as with 
+\begin{equation}
+    x(t) = \sum^\infty_{n=0} \frac{x^{(n)}(t)}{n!}(x-t)^n
+\end{equation}
+however, we are dealing with limited precision and will only use a few terms of the summation such that $x(t)$ becomes
+\begin{equation}
+    x(t) =  \frac{x^{(0)}(t)}{0!}(x-t)^0 + \frac{x^{(1)}(t)}{1!}(x-t)^1 +\frac{x^{(2)}(t)}{2!}(x-t)^2 +\frac{x^{(3)}(t)}{3!}(x-t)^3
+\end{equation}
+notice that $x^{(1)}(t)$ is the derivative of $x(t)$ which is equal to the velocity $v(t)$ and $x^{(2)}$ is equal to the acceleration $a(t)$. But we can also formulate a Taylor expansion for $v(t)$ and $a(t)$
+\begin{equation}
+    \begin{split}
+        v(t) =  \frac{v^{(0)}(t)}{0!}(x-t)^0 + \frac{v^{(1)}(t)}{1!}(x-t)^1 +\frac{v^{(2)}(t)}{2!}(x-t)^2\\
+        v(t) = v(0) + a(t) + j(t)
+    \end{split}
+\end{equation}
+\begin{equation}
+    \begin{split}
+        a(t) =  \frac{a^{(0)}(t)}{0!}(x-t)^0 + \frac{a^{(1)}(t)}{1!}(x-t)^1 \\
+        a(t) =  a(0) + j(t) 
+    \end{split}
+\end{equation}
+we can calculate $j(t)$ by taking the derivative of equation~\ref{eq:newtongravity} with respect to $a$. Thus obtaining more accurate results for our $x(t), v(t)$ and $a(t)$.
+Also, error of the approximation can be calculated as follows:
 
 
 \subsubsection{Sensitivity analysis}
@@ -166,6 +191,9 @@ Delta step influences sensitivity?....
 
 
 \subsubsection{Verify our approximation}
+\textbf{Momentum, angular momentum}\\
+fdsfs \\
+\textbf{Energy}\\
 Constraints check after each simulation round
 Possible checks for simulation correctness: law of momentum conservation, law of energy conservation, unintended orbit change
 
