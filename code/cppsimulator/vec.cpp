@@ -66,3 +66,8 @@ Vec3D& Vec3D::operator+=(const Vec3D& vec)
     _z += vec._z;
     return (*this);
 }
+
+void Vec3D::print()
+{
+    std::cout << _x << " " << _y << " " << _z << std::endl;
+}

@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
             fullscreen);
 
     std::vector<Particle> particles;
-    for (int i = 0; i < 200000; i++)
+    for (int i = 0; i < 2000; i++)
     {
         particles.push_back(Particle());
     }
@@ -95,6 +95,24 @@ int main(int argc, char* argv[])
     float distance = -30;
     while (running)
     {
+        //run model verification steps
+        Vec3D totalMomentum;
+        float totalKineticEnergy, totalPotentialEnergy;
+        for(auto& particle: particles)
+        {
+            totalMomentum = totalMomentum + particle.momentum();
+            totalKineticEnergy += particle.kineticEnergy();
+            totalPotentialEnergy += particle.potentialEnergy();
+        }
+        totalPotentialEnergy *= -0.5;
+
+
+        std::cout << "total momentum: (" << totalMomentum.length() << ") " ;
+        totalMomentum.print();
+        std::cout << "total kinetic energy: " << totalKineticEnergy << std::endl;
+        std::cout << "total potential energy: " << totalPotentialEnergy << std::endl;
+        std::cout << "total energy: " << totalPotentialEnergy + totalKineticEnergy  << std::endl;
+
         //run simulation
         for(auto& particle: particles)
         {

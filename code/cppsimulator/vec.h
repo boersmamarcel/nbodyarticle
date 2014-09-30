@@ -13,6 +13,7 @@ class Vec3D
         Vec3D operator+(const Vec3D& vec) const;
         Vec3D operator-(const Vec3D& vec) const;
         float length();
+        void print();
 
         Vec3D& operator+=(const Vec3D& vec);
         float x() const {return _x;}
