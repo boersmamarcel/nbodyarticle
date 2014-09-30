@@ -15,6 +15,7 @@ class Particle
         Vec3D _position;
         Vec3D momentum();
         float kineticEnergy();
+        float mass() const {return _mass;}
         float potentialEnergy() {return _potentialEnergy;}
     private:
         std::deque<Vec3D> _positionHistory;
