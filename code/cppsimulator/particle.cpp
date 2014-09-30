@@ -6,7 +6,7 @@
 Particle::Particle()
 {
     _position = Vec3D::createRandom(-10, 10);
-    _velocity = Vec3D::createRandom(-0.1, 0.1);
+    _velocity = Vec3D::createRandom(-1, 1);
     _mass = 1;
 }
 
@@ -25,8 +25,8 @@ void Particle::calculateAcceleration(const std::vector<Particle>& particles, flo
 
         Vec3D positionDelta = (particle._position - _position);
         float l = positionDelta.length();
-        _potentialEnergy += 1 / (l*l);
-        _acceleration +=  (positionDelta * timestep * G) / (l*l*l);
+        _potentialEnergy += (_mass * particle.mass() * G) / (l*l);
+        _acceleration +=  (positionDelta * timestep * G * particle.mass()) / (l*l*l);
 
     }
 }
@@ -46,7 +46,7 @@ void Particle::update(float timestep)
 
 void Particle::render()
 {
-    float redness = _potentialEnergy / 100;
+    float redness = _potentialEnergy / 10;
     if (redness > 1)
         redness = 1;
     glColor3f(1,1-redness,1-redness);
