@@ -4,6 +4,8 @@
 #include <OpenGL/glu.h>
 #include "SDL.h"
 #include "particle.h"
+#include <fstream>
+
 
 SDL_Window* initSDLAndOpenGL(int width, int height, bool vsync, bool fullscreen)
 {
@@ -86,6 +88,10 @@ int main(int argc, char* argv[])
         particles.push_back(Particle());
     }
 
+    //create log file
+    std::ofstream outfile("log_file.txt");
+
+  
 
     bool running = true;
     float timestep = 0.1;
@@ -112,6 +118,13 @@ int main(int argc, char* argv[])
         std::cout << "total kinetic energy: " << totalKineticEnergy << std::endl;
         std::cout << "total potential energy: " << totalPotentialEnergy << std::endl;
         std::cout << "total energy: " << totalPotentialEnergy + totalKineticEnergy  << std::endl;
+
+        if(!outfile.is_open()) {
+            std::cerr << "Couldn't open 'output.txt'" << std::endl;
+            return -1;
+        }
+
+        outfile << totalKineticEnergy << "," << totalPotentialEnergy << "," << totalPotentialEnergy + totalKineticEnergy << ";" << std::endl;
 
         //run simulation
         for(auto& particle: particles)
@@ -160,4 +173,5 @@ int main(int argc, char* argv[])
             }
         }
     }
+    outfile.close();
 }
