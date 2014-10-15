@@ -96,6 +96,7 @@ int main(int argc, char* argv[])
     std::ofstream outfile("log_file.txt");
 
     enum IntegrationType {NAIVE, JERK};
+    bool dynamicTime = false;
 
     IntegrationType integrationType = NAIVE;
 
@@ -105,7 +106,13 @@ int main(int argc, char* argv[])
             integrationType = NAIVE;
         else if ("jerk" == std::string(argv[1]))
             integrationType = JERK;
+        if(argc > 2){
+            if ("dynamic" == std::string(argv[2]))
+                dynamicTime = true;
+        }
+        
     }
+
   
 
     bool running = true;
@@ -153,16 +160,16 @@ int main(int argc, char* argv[])
             return -1;
         }
 
-        outfile << totalKineticEnergy << "," << totalPotentialEnergy << "," << totalEnergy << ";" << std::endl;
+        outfile << totalKineticEnergy << "," << totalPotentialEnergy << "," << relativeEnergyError << ";" << std::endl;
 
         switch (integrationType)
         {
             case JERK:
-                integrator.jerkIntegrator(particles);
+                integrator.jerkIntegrator(particles,dynamicTime, 0.01);
                 break;
             case NAIVE:
             default:
-                integrator.naiveIntegrator(particles);
+                integrator.naiveIntegrator(particles, dynamicTime, 0.01);
                 break;
         }
 
