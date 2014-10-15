@@ -29,7 +29,7 @@ void Integrator::jerkIntegrator(std::vector<Particle>& particles)
 
             Vec3D positionDelta = (p._position - particle._position);
             Vec3D velocityDelta = p._velocity - particle._velocity;
-            float l = positionDelta.length();
+            float l = positionDelta.length() + 0.1;
             particle._potentialEnergy += (particle._mass * p.mass() * G) / (l*l);
             Vec3D jerkDelta = (((velocityDelta)/(l*l*l)) - 
                     ((positionDelta*(positionDelta*velocityDelta))/(l*l*l*l*l))*3)*p.mass();
@@ -52,6 +52,7 @@ void Integrator::jerkIntegrator(std::vector<Particle>& particles)
     }
 
     timestep = fmin(globalMin, 0.01);
+    timestep = fmax(timestep, 0.000001);
 
     for(auto& particle: particles)
     {
@@ -86,7 +87,7 @@ void Integrator::naiveIntegrator(std::vector<Particle>& particles)
 
             Vec3D positionDelta = (p._position - particle._position);
             Vec3D velocityDelta = p._velocity - particle._velocity;
-            float l = positionDelta.length();
+            float l = positionDelta.length() + 0.1;
             particle._potentialEnergy += (particle._mass * p.mass() * G) / (l*l);
             Vec3D accelerationDelta = (positionDelta * timestep * G * particle.mass()) / (l*l*l);
             particle._acceleration += accelerationDelta;
@@ -102,6 +103,7 @@ void Integrator::naiveIntegrator(std::vector<Particle>& particles)
     }
 
     timestep = fmin(globalMin, 0.01);
+    timestep = fmax(timestep, 0.000001);
 
     for(auto& particle: particles)
     {
