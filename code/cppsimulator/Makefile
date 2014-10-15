@@ -1,10 +1,10 @@
 SHELL = bash
 
-OBJS = main particle vec
+OBJS = main particle vec integrator
 
 BUILDPATH = build/
 INCLUDES = 
-CFLAGS = -std=c++11 $$(sdl2-config --cflags) -O3 $(INCLUDES)
+CFLAGS = -std=c++11 $$(sdl2-config --cflags) -O3 $(INCLUDES) 
 CLIBS = -framework OpenGL $$(sdl2-config --libs) 
 
 PATHOBJS = $(patsubst %,$(BUILDPATH)%.o,$(OBJS))

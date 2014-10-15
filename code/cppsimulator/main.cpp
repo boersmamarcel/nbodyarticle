@@ -4,6 +4,7 @@
 #include <OpenGL/glu.h>
 #include "SDL.h"
 #include "particle.h"
+#include "integrator.h"
 #include <fstream>
 
 
@@ -83,7 +84,7 @@ int main(int argc, char* argv[])
             fullscreen);
 
     std::vector<Particle> particles;
-    for (int i = 0; i < 2000; i++)
+    for (int i = 0; i < 200; i++)
     {
         particles.push_back(Particle());
     }
@@ -94,13 +95,16 @@ int main(int argc, char* argv[])
   
 
     bool running = true;
-    float timestep = 0.1;
+    float timestep = 0.0001;
 
     float yRotate = 0;
     float xRotate = 0;
     float distance = -30;
     float initialTotalEnergy;
     bool initialRun = true;
+
+    Integrator integrator;
+
     while (running)
     {
         //run model verification steps
@@ -137,15 +141,9 @@ int main(int argc, char* argv[])
 
         outfile << totalKineticEnergy << "," << totalPotentialEnergy << "," << totalEnergy << ";" << std::endl;
 
-        //run simulation
-        for(auto& particle: particles)
-        {
-            particle.calculateAcceleration(particles, timestep);
-        }
-        for(auto& particle: particles)
-        {
-            particle.update(timestep);
-        }
+
+        integrator.naiveIntegrator(particles);
+
 
         //render universe
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

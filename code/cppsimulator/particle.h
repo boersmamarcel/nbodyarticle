@@ -9,14 +9,13 @@ class Particle
 {
     public:
         Particle();
-        void calculateAcceleration(const std::vector<Particle>& particles, float timestep);
-        void update(float timestep);
         void render();
         Vec3D _position;
         Vec3D momentum();
         float kineticEnergy();
         float mass() const {return _mass;}
         float potentialEnergy() {return _potentialEnergy;}
+        friend class Integrator;
     private:
         std::deque<Vec3D> _positionHistory;
         float _potentialEnergy;

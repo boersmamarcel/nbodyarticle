@@ -54,9 +54,9 @@ Vec3D Vec3D::operator*(float scalar)
     return Vec3D(_x*scalar, _y*scalar, _z*scalar);
 }
 
-Vec3D Vec3D::operator*(const Vec3D& vec) const
+float Vec3D::operator*(const Vec3D& vec) const
 {
-    return Vec3D(_x*vec.x(), _y*vec.y(), _z*vec.z());
+    return (_x*vec.x() + _y*vec.y() + _z*vec.z());
 }
 
 Vec3D Vec3D::operator/(float scalar)
