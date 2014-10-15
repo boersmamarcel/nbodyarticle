@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
     {
         //run model verification steps
         Vec3D totalMomentum;
-        float totalKineticEnergy, totalPotentialEnergy;
+        float totalKineticEnergy = 0, totalPotentialEnergy = 0;
         for(auto& particle: particles)
         {
             totalMomentum = totalMomentum + particle.momentum();
