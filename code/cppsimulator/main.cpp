@@ -92,6 +92,17 @@ int main(int argc, char* argv[])
     //create log file
     std::ofstream outfile("log_file.txt");
 
+    enum IntegrationType {NAIVE, JERK};
+
+    IntegrationType integrationType = NAIVE;
+
+    if (argc > 1)
+    {
+        if ("naive" == std::string(argv[1]))
+            integrationType = NAIVE;
+        else if ("jerk" == std::string(argv[1]))
+            integrationType = JERK;
+    }
   
 
     bool running = true;
@@ -141,8 +152,16 @@ int main(int argc, char* argv[])
 
         outfile << totalKineticEnergy << "," << totalPotentialEnergy << "," << totalEnergy << ";" << std::endl;
 
-
-        integrator.naiveIntegrator(particles);
+        switch (integrationType)
+        {
+            case JERK:
+                integrator.jerkIntegrator(particles);
+                break;
+            case NAIVE:
+            default:
+                integrator.naiveIntegrator(particles);
+                break;
+        }
 
 
         //render universe

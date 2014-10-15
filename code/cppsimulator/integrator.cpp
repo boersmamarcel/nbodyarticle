@@ -1,9 +1,17 @@
 #include "integrator.h"
 #include "particle.h"
+#include <cmath>
+#include <iostream>
+#include <algorithm>
+
+Integrator::Integrator() :
+    timestep(0.1)
+{
+}
 
 void Integrator::jerkIntegrator(std::vector<Particle>& particles)
 {
-    float timestep = 0.01;
+    float globalMin;
     //run simulation
     for(auto& particle: particles)
     {
@@ -23,16 +31,28 @@ void Integrator::jerkIntegrator(std::vector<Particle>& particles)
             Vec3D velocityDelta = p._velocity - particle._velocity;
             float l = positionDelta.length();
             particle._potentialEnergy += (particle._mass * p.mass() * G) / (l*l);
-            particle._jerk += (((velocityDelta)/(l*l*l)) - 
+            Vec3D jerkDelta = (((velocityDelta)/(l*l*l)) - 
                     ((positionDelta*(positionDelta*velocityDelta))/(l*l*l*l*l))*3)*p.mass();
-            //_acceleration +=  (positionDelta * timestep * G * particle.mass()) / (l*l*l);
+            particle._jerk += jerkDelta;
 
+            Vec3D accelerationDelta = jerkDelta * timestep;
+
+            float minV = positionDelta.length() / velocityDelta.length();
+            float minA = sqrt(positionDelta.length() / accelerationDelta.length());
+            float minJ = powf(positionDelta.length() / jerkDelta.length(), 1.0/3);
+
+            globalMin = minV < globalMin ? minV : globalMin;
+            globalMin = minA < globalMin ? minA : globalMin;
+            globalMin = minJ < globalMin ? minJ : globalMin;
     }
 
     //Taylor expansion around the current point
     particle._acceleration = particle._acceleration + particle._jerk*timestep;
     
     }
+
+    timestep = fmin(globalMin, 0.01);
+
     for(auto& particle: particles)
     {
         //Taylor expansion around the current point
@@ -50,8 +70,8 @@ void Integrator::jerkIntegrator(std::vector<Particle>& particles)
 
 void Integrator::naiveIntegrator(std::vector<Particle>& particles)
 {
-    float timestep = 0.01;
     //run simulation
+    float globalMin = 1000000000;
     for(auto& particle: particles)
     {
         particle._acceleration = Vec3D();
@@ -68,12 +88,21 @@ void Integrator::naiveIntegrator(std::vector<Particle>& particles)
             Vec3D velocityDelta = p._velocity - particle._velocity;
             float l = positionDelta.length();
             particle._potentialEnergy += (particle._mass * p.mass() * G) / (l*l);
-            particle._acceleration +=  (positionDelta * timestep * G * particle.mass()) / (l*l*l);
+            Vec3D accelerationDelta = (positionDelta * timestep * G * particle.mass()) / (l*l*l);
+            particle._acceleration += accelerationDelta;
 
+            float minV = positionDelta.length() / velocityDelta.length();
+            float minA = sqrt(positionDelta.length() / accelerationDelta.length());
+
+            globalMin = minV < globalMin ? minV : globalMin;
+            globalMin = minA < globalMin ? minA : globalMin;
     }
 
     
     }
+
+    timestep = fmin(globalMin, 0.01);
+
     for(auto& particle: particles)
     {
         //Taylor expansion around the current point
