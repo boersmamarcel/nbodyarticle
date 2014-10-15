@@ -126,7 +126,10 @@ int main(int argc, char* argv[])
 
     Integrator integrator;
 
-    while (running)
+
+    int loop_count = 0;
+
+    while (loop_count < 10000)
     {
         //run model verification steps
         Vec3D totalMomentum;
@@ -148,12 +151,12 @@ int main(int argc, char* argv[])
         float relativeEnergyError = (initialTotalEnergy - totalEnergy)/
             totalEnergy;
 
-        std::cout << "total momentum: (" << totalMomentum.length() << ") " ;
-        totalMomentum.print();
-        std::cout << "total kinetic energy: " << totalKineticEnergy << std::endl;
-        std::cout << "total potential energy: " << totalPotentialEnergy << std::endl;
-        std::cout << "total energy: " << totalEnergy << std::endl;
-        std::cout << "relative energy error: " << relativeEnergyError << std::endl;
+        // std::cout << "total momentum: (" << totalMomentum.length() << ") " ;
+        // totalMomentum.print();
+        // std::cout << "total kinetic energy: " << totalKineticEnergy << std::endl;
+        // std::cout << "total potential energy: " << totalPotentialEnergy << std::endl;
+        // std::cout << "total energy: " << totalEnergy << std::endl;
+        // std::cout << "relative energy error: " << relativeEnergyError << std::endl;
 
         if(!outfile.is_open()) {
             std::cerr << "Couldn't open 'log_file.txt'" << std::endl;
@@ -210,6 +213,8 @@ int main(int argc, char* argv[])
                 distance += 0.3* event.wheel.y;
             }
         }
+
+        loop_count++;
     }
     outfile.close();
 }
