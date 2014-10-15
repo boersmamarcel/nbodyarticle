@@ -99,6 +99,8 @@ int main(int argc, char* argv[])
     float yRotate = 0;
     float xRotate = 0;
     float distance = -30;
+    float initialTotalEnergy;
+    bool initialRun = true;
     while (running)
     {
         //run model verification steps
@@ -112,19 +114,28 @@ int main(int argc, char* argv[])
         }
         totalPotentialEnergy *= -0.5;
 
+        float totalEnergy = totalPotentialEnergy + totalKineticEnergy;
+        if (initialRun)
+        {
+            initialTotalEnergy = totalEnergy;
+            initialRun = false;
+        }
+        float relativeEnergyError = (initialTotalEnergy - totalEnergy)/
+            totalEnergy;
 
         std::cout << "total momentum: (" << totalMomentum.length() << ") " ;
         totalMomentum.print();
         std::cout << "total kinetic energy: " << totalKineticEnergy << std::endl;
         std::cout << "total potential energy: " << totalPotentialEnergy << std::endl;
-        std::cout << "total energy: " << totalPotentialEnergy + totalKineticEnergy  << std::endl;
+        std::cout << "total energy: " << totalEnergy << std::endl;
+        std::cout << "relative energy error: " << relativeEnergyError << std::endl;
 
         if(!outfile.is_open()) {
             std::cerr << "Couldn't open 'log_file.txt'" << std::endl;
             return -1;
         }
 
-        outfile << totalKineticEnergy << "," << totalPotentialEnergy << "," << totalPotentialEnergy + totalKineticEnergy << ";" << std::endl;
+        outfile << totalKineticEnergy << "," << totalPotentialEnergy << "," << totalEnergy << ";" << std::endl;
 
         //run simulation
         for(auto& particle: particles)
