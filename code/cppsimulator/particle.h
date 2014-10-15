@@ -17,7 +17,6 @@ class Particle
         float kineticEnergy();
         float mass() const {return _mass;}
         float potentialEnergy() {return _potentialEnergy;}
-        void calculateJerk(const std::vector<Particle>& particles, float timestep);
     private:
         std::deque<Vec3D> _positionHistory;
         float _potentialEnergy;
