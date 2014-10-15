@@ -10,6 +10,7 @@ class Vec3D
         static Vec3D createRandom(float min, float max);
         Vec3D operator*(float scalar);
         Vec3D operator/(float scalar);
+        Vec3D operator*(const Vec3D& vec) const;
         Vec3D operator+(const Vec3D& vec) const;
         Vec3D operator-(const Vec3D& vec) const;
         float length();

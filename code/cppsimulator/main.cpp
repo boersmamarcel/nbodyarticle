@@ -130,6 +130,7 @@ int main(int argc, char* argv[])
         for(auto& particle: particles)
         {
             particle.calculateAcceleration(particles, timestep);
+            particle.calculateJerk(particles, timestep);
         }
         for(auto& particle: particles)
         {

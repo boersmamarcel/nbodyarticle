@@ -10,6 +10,26 @@ Particle::Particle()
     _mass = 1;
 }
 
+void Particle::calculateJerk(const std::vector<Particle>& particles, float timestep)
+{
+    _jerk = Vec3D();
+
+    const float G = 0.01;
+
+    for (const auto& particle: particles){
+        if(&particle == this)
+            continue;
+
+        Vec3D positionDelta = particle._position - _position;
+        Vec3D velocityDelta = particle._velocity - _velocity;
+        float l = positionDelta.length();
+
+        _jerk += (((velocityDelta)/(l*l*l)) - ((positionDelta*(positionDelta*velocityDelta))/(l*l*l*l*l))*3)*particle.mass();
+
+    }
+
+}
+
 void Particle::calculateAcceleration(const std::vector<Particle>& particles, float timestep)
 {
     //set acceleration to zero vector
