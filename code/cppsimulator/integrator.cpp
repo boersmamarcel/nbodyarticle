@@ -4,12 +4,15 @@
 #include <iostream>
 #include <algorithm>
 
+#define GLOBAL_MINIMUM_TIMESTEP 0.1
+#define GLOBAL_MAXIMUM_TIMESTEP 0.0000001
+
 Integrator::Integrator() :
     timestep(0.1)
 {
 }
 
-void Integrator::jerkIntegrator(std::vector<Particle>& particles)
+void Integrator::jerkIntegrator(std::vector<Particle>& particles, bool dynamic_time, float initial_timestep)
 {
     float globalMin;
     //run simulation
@@ -51,8 +54,8 @@ void Integrator::jerkIntegrator(std::vector<Particle>& particles)
     
     }
 
-    timestep = fmin(globalMin, 0.01);
-    timestep = fmax(timestep, 0.000001);
+    timestep = (dynamic_time)?fmin(globalMin, GLOBAL_MINIMUM_TIMESTEP):initial_timestep;
+    timestep = (dynamic_time)?fmin(timestep, GLOBAL_MAXIMUM_TIMESTEP):initial_timestep;
 
     for(auto& particle: particles)
     {
@@ -69,10 +72,10 @@ void Integrator::jerkIntegrator(std::vector<Particle>& particles)
     }
 }
 
-void Integrator::naiveIntegrator(std::vector<Particle>& particles)
+void Integrator::naiveIntegrator(std::vector<Particle>& particles, bool dynamic_time, float initial_timestep)
 {
     //run simulation
-    float globalMin = 1000000000;
+    float globalMin;
     for(auto& particle: particles)
     {
         particle._acceleration = Vec3D();
@@ -102,8 +105,8 @@ void Integrator::naiveIntegrator(std::vector<Particle>& particles)
     
     }
 
-    timestep = fmin(globalMin, 0.01);
-    timestep = fmax(timestep, 0.000001);
+    timestep = (dynamic_time)?fmin(globalMin, GLOBAL_MINIMUM_TIMESTEP):initial_timestep;
+    timestep = (dynamic_time)?fmin(timestep, GLOBAL_MAXIMUM_TIMESTEP):initial_timestep;
 
     for(auto& particle: particles)
     {
