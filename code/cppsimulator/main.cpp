@@ -6,6 +6,7 @@
 #include "particle.h"
 #include "integrator.h"
 #include <fstream>
+#include <cstdlib>
 
 
 SDL_Window* initSDLAndOpenGL(int width, int height, bool vsync, bool fullscreen)
@@ -79,6 +80,8 @@ int main(int argc, char* argv[])
     int screenHeight = 600;
     bool vsync = true;
     bool fullscreen = false;
+
+    srand(123);
 
     SDL_Window* surface = initSDLAndOpenGL(screenWidth, screenHeight, vsync,
             fullscreen);
