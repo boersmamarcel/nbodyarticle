@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
         std::cout << "total energy: " << totalPotentialEnergy + totalKineticEnergy  << std::endl;
 
         if(!outfile.is_open()) {
-            std::cerr << "Couldn't open 'output.txt'" << std::endl;
+            std::cerr << "Couldn't open 'log_file.txt'" << std::endl;
             return -1;
         }
 
