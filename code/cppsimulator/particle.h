@@ -21,6 +21,7 @@ class Particle
         float _potentialEnergy;
         Vec3D _velocity;
         Vec3D _acceleration;
+        Vec3D _prevAcceleration;
         float _mass;
         Vec3D _jerk;
 };

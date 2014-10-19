@@ -122,3 +122,55 @@ void Integrator::naiveIntegrator(std::vector<Particle>& particles, bool dynamic_
         }
     }
 }
+
+void Integrator::leapfrogIntegrator(std::vector<Particle>& particles, bool dynamic_time, float initial_timestep)
+{
+    //run simulation
+    float globalMin;
+    for(auto& particle: particles)
+    {
+        particle._prevAcceleration = particle._acceleration;
+        particle._acceleration = Vec3D();
+
+        particle._potentialEnergy = 0;
+        const float G = 0.01;
+
+        for (const auto& p: particles)
+        {
+            if (&p == &particle)
+                continue;
+
+            Vec3D positionDelta = (p._position - particle._position);
+            Vec3D velocityDelta = p._velocity - particle._velocity;
+            float l = positionDelta.length() + 0.1;
+            particle._potentialEnergy += (particle._mass * p.mass() * G) / (l*l);
+            Vec3D accelerationDelta = (positionDelta * timestep * G * particle.mass()) / (l*l*l);
+            particle._acceleration += accelerationDelta;
+
+            float minV = positionDelta.length() / velocityDelta.length();
+            float minA = sqrt(positionDelta.length() / accelerationDelta.length());
+
+            globalMin = minV < globalMin ? minV : globalMin;
+            globalMin = minA < globalMin ? minA : globalMin;
+    }
+
+    
+    }
+
+    timestep = (dynamic_time)?fmin(globalMin, GLOBAL_MINIMUM_TIMESTEP):initial_timestep;
+    timestep = (dynamic_time)?fmin(timestep, GLOBAL_MAXIMUM_TIMESTEP):initial_timestep;
+
+    for(auto& particle: particles)
+    {
+        //Taylor expansion around the current point
+        particle._position = particle._position +  particle._velocity * timestep + particle._acceleration * 0.5 * timestep * timestep;
+        particle._velocity = particle._velocity + (particle._acceleration + particle._prevAcceleration) * 0.5 * timestep;
+
+        const int historySize = 20;
+        particle._positionHistory.push_back(particle._position);
+        if (particle._positionHistory.size() > historySize)
+        {
+            particle._positionHistory.pop_front();
+        }
+    }
+}

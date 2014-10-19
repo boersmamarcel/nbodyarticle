@@ -95,7 +95,7 @@ int main(int argc, char* argv[])
     //create log file
     std::ofstream outfile("log_file.txt");
 
-    enum IntegrationType {NAIVE, JERK};
+    enum IntegrationType {NAIVE, JERK, LEAPFROG};
     bool dynamicTime = false;
 
     IntegrationType integrationType = NAIVE;
@@ -106,6 +106,8 @@ int main(int argc, char* argv[])
             integrationType = NAIVE;
         else if ("jerk" == std::string(argv[1]))
             integrationType = JERK;
+        else if ("leapfrog" == std::string(argv[1]))
+            integrationType = LEAPFROG;
         if(argc > 2){
             if ("dynamic" == std::string(argv[2]))
                 dynamicTime = true;
@@ -129,7 +131,7 @@ int main(int argc, char* argv[])
 
     int loop_count = 0;
 
-    while (loop_count < 10000)
+    while (loop_count < 10000 && running)
     {
         //run model verification steps
         Vec3D totalMomentum;
@@ -169,6 +171,9 @@ int main(int argc, char* argv[])
         {
             case JERK:
                 integrator.jerkIntegrator(particles,dynamicTime, 0.01);
+                break;
+            case LEAPFROG:
+                integrator.leapfrogIntegrator(particles,dynamicTime, 0.01);
                 break;
             case NAIVE:
             default:
