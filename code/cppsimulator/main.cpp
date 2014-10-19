@@ -129,9 +129,9 @@ int main(int argc, char* argv[])
     Integrator integrator;
 
 
-    int loop_count = 0;
+    float totalTime = 0;
 
-    while (loop_count < 10000 && running)
+    while (totalTime < 1000 && running)
     {
         //run model verification steps
         Vec3D totalMomentum;
@@ -165,7 +165,7 @@ int main(int argc, char* argv[])
             return -1;
         }
 
-        outfile << totalKineticEnergy << "," << totalPotentialEnergy << "," << relativeEnergyError << ";" << std::endl;
+        outfile << totalKineticEnergy << "," << totalPotentialEnergy << "," << relativeEnergyError << "," << totalTime <<  ";" << std::endl;
 
         switch (integrationType)
         {
@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
             }
         }
 
-        loop_count++;
+        totalTime += integrator.getTimestep();
     }
     outfile.close();
 }
