@@ -70,3 +70,31 @@ plot "naive_time_bodies.txt" using 1:2 title "euler" with lines, \
      "jerk_time_bodies.txt" using 1:2 title "jerk" with lines
 reset
 
+set terminal pngcairo  transparent enhanced font "arial,16" fontscale 1.0 size 800,600
+set output "euler_constant_dynamic.png"
+set xlabel "time"
+set ylabel "relative energy error"
+set title "euler constant and dynamic integrators"
+set datafile separator ","
+plot "naive.txt" using 4:(abs($3)) title "constant (dt=0.01)" with line, \
+         "naive_dynamic.txt" using 4:(abs($3)) title "dynamic (dt=[0.001,0.1])" with line
+reset
+
+set terminal pngcairo  transparent enhanced font "arial,16" fontscale 1.0 size 800,600
+set output "euler_dynamic.png"
+set xlabel "time"
+set ylabel "relative energy error"
+set title "euler dynamic integrator"
+set datafile separator ","
+plot "naive_dynamic.txt" using 4:(abs($3)) title "dynamic (dt=[0.001,0.1])" with line
+reset
+
+set terminal pngcairo  transparent enhanced font "arial,16" fontscale 1.0 size 800,600
+set output "jerk_constant_dynamic.png"
+set xlabel "time"
+set ylabel "relative energy error"
+set title "jerk constant and dynamic integrators"
+set datafile separator ","
+plot "jerk.txt" using 4:(abs($3)) title "constant (dt=0.01)" with line, \
+         "jerk_dynamic.txt" using 4:(abs($3)) title "dynamic (dt=[0.001,0.1])" with line
+reset

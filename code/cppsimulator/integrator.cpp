@@ -5,7 +5,7 @@
 #include <algorithm>
 
 #define GLOBAL_MINIMUM_TIMESTEP 0.1
-#define GLOBAL_MAXIMUM_TIMESTEP 0.0000001
+#define GLOBAL_MAXIMUM_TIMESTEP 0.001
 
 Integrator::Integrator() :
     timestep(0.1)
