@@ -163,7 +163,7 @@ void Integrator::leapfrogIntegrator(std::vector<Particle>& particles, bool dynam
     for(auto& particle: particles)
     {
         //Taylor expansion around the current point
-        particle._position = particle._position +  particle._velocity * timestep + particle._acceleration * 0.5 * timestep * timestep;
+        particle._position = particle._position +  particle._velocity * timestep + particle._prevAcceleration * 0.5 * timestep * timestep;
         particle._velocity = particle._velocity + (particle._acceleration + particle._prevAcceleration) * 0.5 * timestep;
 
         const int historySize = 20;
