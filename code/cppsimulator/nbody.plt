@@ -61,11 +61,12 @@ plot "jerk.0_001.txt" using 4:3 title "dt = 0.001" with line, \
 reset
 
 set terminal pngcairo  transparent enhanced font "arial,16" fontscale 1.0 size 800,600
-set output "naive_time_bodies.png"
+set output "time_bodies.png"
 set xlabel "bodies"
 set ylabel "time"
-set title "simulation with different body counts, dt=0.1"
+set title "simulation with different body counts, t=0->100, dt=0.1"
 set datafile separator ","
-plot "naive_time_bodies.txt" using 1:2 title "" with lines
+plot "naive_time_bodies.txt" using 1:2 title "euler" with lines, \
+     "jerk_time_bodies.txt" using 1:2 title "jerk" with lines
 reset
 
