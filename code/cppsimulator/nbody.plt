@@ -35,3 +35,37 @@ plot "leapfrog.0_001.txt" using 4:3 title "dt = 0.001" with line, \
          "leapfrog.1.txt" using 4:3 title "dt = 1" with line
 reset
 
+set terminal pngcairo  transparent enhanced font "arial,16" fontscale 1.0 size 800,600
+set output "jerk_different_timesteps.png"
+set xlabel "time"
+set ylabel "relative energy error"
+set title "jerk integrator with different timesteps"
+set datafile separator ","
+plot "jerk.0_001.txt" using 4:3 title "dt = 0.001" with line, \
+         "jerk.0_01.txt" using 4:3 title "dt = 0.01" with line, \
+         "jerk.0_1.txt" using 4:3 title "dt = 0.1" with line, \
+         "jerk.1.txt" using 4:3 title "dt = 1" with line
+reset
+
+set terminal pngcairo  transparent enhanced font "arial,16" fontscale 1.0 size 800,600
+set output "jerk_different_timesteps_truncated.png"
+set xlabel "time"
+set ylabel "relative energy error"
+set title "jerk integrator with different timesteps"
+set datafile separator ","
+set xrange[2.5:100]
+plot "jerk.0_001.txt" using 4:3 title "dt = 0.001" with line, \
+         "jerk.0_01.txt" using 4:3 title "dt = 0.01" with line, \
+         "jerk.0_1.txt" using 4:3 title "dt = 0.1" with line, \
+         "jerk.1.txt" using 4:3 title "dt = 1" with line
+reset
+
+set terminal pngcairo  transparent enhanced font "arial,16" fontscale 1.0 size 800,600
+set output "naive_time_bodies.png"
+set xlabel "bodies"
+set ylabel "time"
+set title "simulation with different body counts, dt=0.1"
+set datafile separator ","
+plot "naive_time_bodies.txt" using 1:2 title "" with lines
+reset
+
