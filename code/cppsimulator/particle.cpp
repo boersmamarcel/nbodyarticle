@@ -19,7 +19,7 @@ Particle::Particle(float positionSize, float velocitySize)
 
 void Particle::render()
 {
-    float redness = _potentialEnergy / 10;
+    float redness = _potentialEnergy * 20;
     if (redness > 1)
         redness = 1;
     glColor3f(1,1-redness,1-redness);

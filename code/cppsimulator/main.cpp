@@ -100,9 +100,11 @@ int main(int argc, char* argv[])
     float speedSize = 0.1;
     float timestep = 0.01;
     int bodies = 200;
+    float maxTime = 100;
 
     bool timeTrial = false;
     int runs = 1;
+    bool demo = false;
 
     if (argc > 1)
     {
@@ -122,10 +124,19 @@ int main(int argc, char* argv[])
             prefix = "timestep=";
             if (!arg.compare(0, prefix.size(), prefix))
                 timestep = atof(arg.substr(prefix.size()).c_str());
+            prefix = "time=";
+            if (!arg.compare(0, prefix.size(), prefix))
+                maxTime = atof(arg.substr(prefix.size()).c_str());
             prefix = "timetrial=";
             if (!arg.compare(0, prefix.size(), prefix))
             {
                 timeTrial = true;
+                runs = atoi(arg.substr(prefix.size()).c_str());
+            }
+            prefix = "demo=";
+            if (!arg.compare(0, prefix.size(), prefix))
+            {
+                demo = true;
                 runs = atoi(arg.substr(prefix.size()).c_str());
             }
             if ("naive" == arg)
@@ -146,7 +157,9 @@ int main(int argc, char* argv[])
     Timer timer;
     timer.start();
 
-    for (int i = 0; i < runs; i++)
+    bool running = true;
+
+    for (int i = 0; i < runs && running; i++)
     {
         std::vector<Particle> particles;
         for (int i = 0; i < bodies; i++)
@@ -154,11 +167,12 @@ int main(int argc, char* argv[])
             particles.push_back(Particle(positionSize, speedSize));
         }
 
-        bool running = true;
 
         float yRotate = 0;
         float xRotate = 0;
         float distance = -30;
+        if (demo)
+            distance = -15;
         float initialTotalEnergy;
         bool initialRun = true;
 
@@ -168,7 +182,7 @@ int main(int argc, char* argv[])
         float totalTime = 0;
         timer.reset();
 
-        while (totalTime < 100 && running)
+        while (totalTime < maxTime && running)
         {
             //run model verification steps
             Vec3D totalMomentum;
