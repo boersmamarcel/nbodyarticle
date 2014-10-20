@@ -1,6 +1,6 @@
 SHELL = bash
 
-OBJS = main particle vec integrator
+OBJS = main particle vec integrator timer
 
 BUILDPATH = build/
 INCLUDES = 

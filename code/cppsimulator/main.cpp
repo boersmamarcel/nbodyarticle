@@ -5,6 +5,7 @@
 #include "SDL.h"
 #include "particle.h"
 #include "integrator.h"
+#include "timer.h"
 #include <fstream>
 #include <cstdlib>
 
@@ -100,6 +101,9 @@ int main(int argc, char* argv[])
     float timestep = 0.01;
     int bodies = 200;
 
+    bool timeTrial = false;
+    int runs = 1;
+
     if (argc > 1)
     {
         for (int i = 1; i < argc; i++)
@@ -118,7 +122,13 @@ int main(int argc, char* argv[])
             prefix = "timestep=";
             if (!arg.compare(0, prefix.size(), prefix))
                 timestep = atof(arg.substr(prefix.size()).c_str());
-            else if ("naive" == arg)
+            prefix = "timetrial=";
+            if (!arg.compare(0, prefix.size(), prefix))
+            {
+                timeTrial = true;
+                runs = atoi(arg.substr(prefix.size()).c_str());
+            }
+            if ("naive" == arg)
                 integrationType = NAIVE;
             else if ("jerk" == arg)
                 integrationType = JERK;
@@ -131,118 +141,136 @@ int main(int argc, char* argv[])
         }
     }
 
-  
-    std::vector<Particle> particles;
-    for (int i = 0; i < 200; i++)
+    std::cout << "timestep:" <<  timestep << std::endl;
+
+    Timer timer;
+    timer.start();
+
+    for (int i = 0; i < runs; i++)
     {
-        particles.push_back(Particle(positionSize, speedSize));
-    }
-
-    bool running = true;
-
-    float yRotate = 0;
-    float xRotate = 0;
-    float distance = -30;
-    float initialTotalEnergy;
-    bool initialRun = true;
-
-    Integrator integrator;
-
-
-    float totalTime = 0;
-
-    while (totalTime < 100 && running)
-    {
-        //run model verification steps
-        Vec3D totalMomentum;
-        float totalKineticEnergy = 0, totalPotentialEnergy = 0;
-        for(auto& particle: particles)
+        std::vector<Particle> particles;
+        for (int i = 0; i < bodies; i++)
         {
-            totalMomentum = totalMomentum + particle.momentum();
-            totalKineticEnergy += particle.kineticEnergy();
-            totalPotentialEnergy += particle.potentialEnergy();
-        }
-        totalPotentialEnergy *= -0.5;
-
-        float totalEnergy = totalPotentialEnergy + totalKineticEnergy;
-        if (initialRun || totalTime < 0.02)
-        {
-            initialTotalEnergy = totalEnergy;
-            initialRun = false;
-        }
-        float relativeEnergyError = (initialTotalEnergy - totalEnergy)/
-            totalEnergy;
-
-        // std::cout << "total momentum: (" << totalMomentum.length() << ") " ;
-        // totalMomentum.print();
-        // std::cout << "total kinetic energy: " << totalKineticEnergy << std::endl;
-        // std::cout << "total potential energy: " << totalPotentialEnergy << std::endl;
-        // std::cout << "total energy: " << totalEnergy << std::endl;
-        // std::cout << "relative energy error: " << relativeEnergyError << std::endl;
-
-        if(!outfile.is_open()) {
-            std::cerr << "Couldn't open 'log_file.txt'" << std::endl;
-            return -1;
+            particles.push_back(Particle(positionSize, speedSize));
         }
 
-        outfile << totalKineticEnergy << "," << totalPotentialEnergy << "," << relativeEnergyError << "," << totalTime <<  ";" << std::endl;
+        bool running = true;
 
-        switch (integrationType)
+        float yRotate = 0;
+        float xRotate = 0;
+        float distance = -30;
+        float initialTotalEnergy;
+        bool initialRun = true;
+
+        Integrator integrator;
+
+
+        float totalTime = 0;
+        timer.reset();
+
+        while (totalTime < 100 && running)
         {
-            case JERK:
-                integrator.jerkIntegrator(particles,dynamicTime, timestep);
-                break;
-            case LEAPFROG:
-                integrator.leapfrogIntegrator(particles,dynamicTime, timestep);
-                break;
-            case NAIVE:
-            default:
-                integrator.naiveIntegrator(particles, dynamicTime, timestep);
-                break;
-        }
-
-
-        //render universe
-        if(!norender)
-        {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glLoadIdentity();
-            glTranslatef(0, 0, distance);
-            glRotatef(xRotate, 1,0,0);
-            glRotatef(yRotate, 0,1,0);
+            //run model verification steps
+            Vec3D totalMomentum;
+            float totalKineticEnergy = 0, totalPotentialEnergy = 0;
             for(auto& particle: particles)
             {
-                particle.render();
+                totalMomentum = totalMomentum + particle.momentum();
+                totalKineticEnergy += particle.kineticEnergy();
+                totalPotentialEnergy += particle.potentialEnergy();
             }
-            SDL_GL_SwapWindow(surface);
-        }
+            totalPotentialEnergy *= -0.5;
+
+            float totalEnergy = totalPotentialEnergy + totalKineticEnergy;
+            if (initialRun)
+            {
+                initialTotalEnergy = totalEnergy;
+                initialRun = false;
+            }
+            float relativeEnergyError = (initialTotalEnergy - totalEnergy)/
+                totalEnergy;
+
+            // std::cout << "total momentum: (" << totalMomentum.length() << ") " ;
+            // totalMomentum.print();
+            // std::cout << "total kinetic energy: " << totalKineticEnergy << std::endl;
+            // std::cout << "total potential energy: " << totalPotentialEnergy << std::endl;
+            // std::cout << "total energy: " << totalEnergy << std::endl;
+            // std::cout << "relative energy error: " << relativeEnergyError << std::endl;
+
+            if(!outfile.is_open()) {
+                std::cerr << "Couldn't open 'log_file.txt'" << std::endl;
+                return -1;
+            }
+
+            if (!timeTrial)
+                outfile << totalKineticEnergy << "," << totalPotentialEnergy << "," << relativeEnergyError << "," << totalTime <<  ";" << std::endl;
+
+            switch (integrationType)
+            {
+                case JERK:
+                    integrator.jerkIntegrator(particles,dynamicTime, timestep);
+                    break;
+                case LEAPFROG:
+                    integrator.leapfrogIntegrator(particles,dynamicTime, timestep);
+                    break;
+                case NAIVE:
+                default:
+                    integrator.naiveIntegrator(particles, dynamicTime, timestep);
+                    break;
+            }
 
 
-        //check input
-        SDL_Event event;    
-        while (SDL_PollEvent(&event)) 
-        {
-            if (event.type == SDL_QUIT)
+            //render universe
+            if(!norender)
             {
-                running = false;
-            }
-            else if (event.type == SDL_MOUSEMOTION)
-            {
-                if (event.motion.state & SDL_BUTTON(1))
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                glLoadIdentity();
+                glTranslatef(0, 0, distance);
+                glRotatef(xRotate, 1,0,0);
+                glRotatef(yRotate, 0,1,0);
+                for(auto& particle: particles)
                 {
-                    yRotate += event.motion.xrel * 0.5;
-                    xRotate += event.motion.yrel * 0.5;
-                    if (xRotate > 90) xRotate = 90;
-                    if (xRotate < -90) xRotate = -90;
+                    particle.render();
+                }
+                SDL_GL_SwapWindow(surface);
+            }
+
+
+            //check input
+            SDL_Event event;    
+            while (SDL_PollEvent(&event)) 
+            {
+                if (event.type == SDL_QUIT)
+                {
+                    running = false;
+                }
+                else if (event.type == SDL_MOUSEMOTION)
+                {
+                    if (event.motion.state & SDL_BUTTON(1))
+                    {
+                        yRotate += event.motion.xrel * 0.5;
+                        xRotate += event.motion.yrel * 0.5;
+                        if (xRotate > 90) xRotate = 90;
+                        if (xRotate < -90) xRotate = -90;
+                    }
+                }
+                else if (event.type == SDL_MOUSEWHEEL)
+                {
+                    distance += 0.3* event.wheel.y;
                 }
             }
-            else if (event.type == SDL_MOUSEWHEEL)
-            {
-                distance += 0.3* event.wheel.y;
-            }
+
+            totalTime += integrator.getTimestep();
         }
 
-        totalTime += integrator.getTimestep();
+        if (timeTrial)
+        {
+            float time = timer.reset();
+            outfile << bodies << "," << time << ";" << std::endl;
+            std::cout << bodies << "," << time << ";" << std::endl;
+            bodies *= 2;
+        }
+
     }
     outfile.close();
 }
