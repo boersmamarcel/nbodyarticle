@@ -86,11 +86,6 @@ int main(int argc, char* argv[])
     SDL_Window* surface = initSDLAndOpenGL(screenWidth, screenHeight, vsync,
             fullscreen);
 
-    std::vector<Particle> particles;
-    for (int i = 0; i < 200; i++)
-    {
-        particles.push_back(Particle());
-    }
 
     //create log file
     std::ofstream outfile("log_file.txt");
@@ -100,28 +95,50 @@ int main(int argc, char* argv[])
     bool norender = false;
 
     IntegrationType integrationType = NAIVE;
+    float positionSize = 10;
+    float speedSize = 0.1;
+    float timestep = 0.01;
+    int bodies = 200;
 
     if (argc > 1)
     {
         for (int i = 1; i < argc; i++)
         {
-        if ("naive" == std::string(argv[i]))
-            integrationType = NAIVE;
-        else if ("jerk" == std::string(argv[i]))
-            integrationType = JERK;
-        else if ("leapfrog" == std::string(argv[i]))
-            integrationType = LEAPFROG;
-        else if ("dynamic" == std::string(argv[i]))
-            dynamicTime = true;
-        else if ("norender" == std::string(argv[i]))
-            norender = true;
+            std::string arg(argv[i]);
+
+            std::string prefix("position=");
+            if (!arg.compare(0, prefix.size(), prefix))
+                positionSize = atof(arg.substr(prefix.size()).c_str());
+            prefix = "speed=";
+            if (!arg.compare(0, prefix.size(), prefix))
+                speedSize = atof(arg.substr(prefix.size()).c_str());
+            prefix = "bodies=";
+            if (!arg.compare(0, prefix.size(), prefix))
+                bodies = atoi(arg.substr(prefix.size()).c_str());
+            prefix = "timestep=";
+            if (!arg.compare(0, prefix.size(), prefix))
+                timestep = atof(arg.substr(prefix.size()).c_str());
+            else if ("naive" == arg)
+                integrationType = NAIVE;
+            else if ("jerk" == arg)
+                integrationType = JERK;
+            else if ("leapfrog" == arg)
+                integrationType = LEAPFROG;
+            else if ("dynamic" == arg)
+                dynamicTime = true;
+            else if ("norender" == arg)
+                norender = true;
         }
     }
 
   
+    std::vector<Particle> particles;
+    for (int i = 0; i < 200; i++)
+    {
+        particles.push_back(Particle(positionSize, speedSize));
+    }
 
     bool running = true;
-    float timestep = 0.0001;
 
     float yRotate = 0;
     float xRotate = 0;
@@ -173,14 +190,14 @@ int main(int argc, char* argv[])
         switch (integrationType)
         {
             case JERK:
-                integrator.jerkIntegrator(particles,dynamicTime, 0.1);
+                integrator.jerkIntegrator(particles,dynamicTime, timestep);
                 break;
             case LEAPFROG:
-                integrator.leapfrogIntegrator(particles,dynamicTime, 0.1);
+                integrator.leapfrogIntegrator(particles,dynamicTime, timestep);
                 break;
             case NAIVE:
             default:
-                integrator.naiveIntegrator(particles, dynamicTime, 0.1);
+                integrator.naiveIntegrator(particles, dynamicTime, timestep);
                 break;
         }
 

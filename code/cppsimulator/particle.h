@@ -9,6 +9,7 @@ class Particle
 {
     public:
         Particle();
+        Particle(float positionSize, float velocitySize);
         void render();
         Vec3D _position;
         Vec3D momentum();

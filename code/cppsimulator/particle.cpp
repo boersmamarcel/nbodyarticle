@@ -3,14 +3,17 @@
 #include <iostream>
 #include <OpenGL/gl.h>
 
-Particle::Particle()
+Particle::Particle() : Particle(1, 0.01)
 {
-    _position = Vec3D::createRandom(-10, 10);
-    _velocity = Vec3D::createRandom(-1, 1);
+}
+
+Particle::Particle(float positionSize, float velocitySize)
+{
+    _position = Vec3D::createRandom(-positionSize, positionSize);
+    _velocity = Vec3D::createRandom(-velocitySize, velocitySize);
     _acceleration = Vec3D();
     _mass = 1;
 }
-
 
 
 
