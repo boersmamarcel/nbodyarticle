@@ -97,22 +97,25 @@ int main(int argc, char* argv[])
 
     enum IntegrationType {NAIVE, JERK, LEAPFROG};
     bool dynamicTime = false;
+    bool norender = false;
 
     IntegrationType integrationType = NAIVE;
 
     if (argc > 1)
     {
-        if ("naive" == std::string(argv[1]))
+        for (int i = 1; i < argc; i++)
+        {
+        if ("naive" == std::string(argv[i]))
             integrationType = NAIVE;
-        else if ("jerk" == std::string(argv[1]))
+        else if ("jerk" == std::string(argv[i]))
             integrationType = JERK;
-        else if ("leapfrog" == std::string(argv[1]))
+        else if ("leapfrog" == std::string(argv[i]))
             integrationType = LEAPFROG;
-        if(argc > 2){
-            if ("dynamic" == std::string(argv[2]))
-                dynamicTime = true;
+        else if ("dynamic" == std::string(argv[i]))
+            dynamicTime = true;
+        else if ("norender" == std::string(argv[i]))
+            norender = true;
         }
-        
     }
 
   
@@ -131,7 +134,7 @@ int main(int argc, char* argv[])
 
     float totalTime = 0;
 
-    while (totalTime < 1000 && running)
+    while (totalTime < 100 && running)
     {
         //run model verification steps
         Vec3D totalMomentum;
@@ -145,7 +148,7 @@ int main(int argc, char* argv[])
         totalPotentialEnergy *= -0.5;
 
         float totalEnergy = totalPotentialEnergy + totalKineticEnergy;
-        if (initialRun)
+        if (initialRun || totalTime < 0.02)
         {
             initialTotalEnergy = totalEnergy;
             initialRun = false;
@@ -170,29 +173,32 @@ int main(int argc, char* argv[])
         switch (integrationType)
         {
             case JERK:
-                integrator.jerkIntegrator(particles,dynamicTime, 0.01);
+                integrator.jerkIntegrator(particles,dynamicTime, 0.1);
                 break;
             case LEAPFROG:
-                integrator.leapfrogIntegrator(particles,dynamicTime, 0.01);
+                integrator.leapfrogIntegrator(particles,dynamicTime, 0.1);
                 break;
             case NAIVE:
             default:
-                integrator.naiveIntegrator(particles, dynamicTime, 0.01);
+                integrator.naiveIntegrator(particles, dynamicTime, 0.1);
                 break;
         }
 
 
         //render universe
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glLoadIdentity();
-        glTranslatef(0, 0, distance);
-        glRotatef(xRotate, 1,0,0);
-        glRotatef(yRotate, 0,1,0);
-        for(auto& particle: particles)
+        if(!norender)
         {
-            particle.render();
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glLoadIdentity();
+            glTranslatef(0, 0, distance);
+            glRotatef(xRotate, 1,0,0);
+            glRotatef(yRotate, 0,1,0);
+            for(auto& particle: particles)
+            {
+                particle.render();
+            }
+            SDL_GL_SwapWindow(surface);
         }
-        SDL_GL_SwapWindow(surface);
 
 
         //check input
