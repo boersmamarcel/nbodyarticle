@@ -55,7 +55,7 @@
 {A simulation study}
 
 \author[S. Sultan, M. Boersma] % (optional, use only with lots of authors)
-{S.~Sultan\inst{1} BSc. \and M.~Boersma\inst{1} BSc.}
+{S.~Sultan\inst{1} \and M.~Boersma\inst{1} }
 % - Give the names in the same order as the appear in the paper.
 % - Use the \inst{?} command only if the authors have different
 %   affiliation.
@@ -139,9 +139,11 @@
 \begin{frame}{Motivation}
 	\begin{itemize}
 		\item
-			Growning number of sattelites 
+			Observational astronomy has limitations
 		\item
-			Increase in space exploration/traveling
+			Computational models can describe evolution of systems that cannot be directly observed
+		\item
+			N-body deals with gravity, useful on scales where gravity dominates
 	\end{itemize}
 \end{frame}
 
@@ -153,18 +155,10 @@
 		\item
 			Gravitation law \begin{equation} F = G \frac{m_1m_2}{r^2}\end{equation}
 		\item 
-			Net force on object \begin{equation} F = m \frac{dv}{dt} = ma \end{equation}
+        Net force on object (Newton's second law) \begin{equation} F = m \frac{dv}{dt} = ma \end{equation}
 	\end{itemize}
 \end{frame}
 
-\begin{frame}{Kepler}
-	\begin{itemize}
-		\item 
-			Kepler problem: Special case of two-body system; find the position or speed
-		\item
-			Kepler orbit: orbit as an ellipse, parabola, or hyperbola
-	\end{itemize}
-\end{frame}
 
 \subsection{2 Body problem}
 
@@ -174,26 +168,55 @@
 
   \begin{itemize}
   \item
-    Some derivations
+      Can be solved analytically, see \cite{frida2013}
   \item
-    example
+      Pluto-Charon system, center of mass outside both bodies
   \item
-  	What about 3-Bodies?
+  	What about $\geq$ 3-Bodies?
   \end{itemize}
 \end{frame}
 
 \begin{frame}{3 Body problem}
-	We can not solve this analytical however we can calculate the acceleratio for each body and derive the change in distance and speed from this.
+	We can not solve this analytical however we can calculate the acceleration, for each body and derive the change in position and speed from this.
   \begin{itemize}
     \item 
       Gravitation law on body $i$ : \begin{equation} F_i =G \sum_{k \neq i} \frac{m_im_k(r_k - r_i)}{|r_k - r_i|^3}\end{equation}
     \item 
       Acceleration $i$ : \begin{equation} a_i = G \sum_{k \neq i} \frac{m_k(r_k - r_i)}{|r_k - r_i|^3}\end{equation}
   \end{itemize}
-  then, with $h$ as a time step, we can simply derive the speed and position on $t+1$.
+  then, with $h$ as a time step, we can numerically derive the speed and position on $t+1$.
   
 \end{frame}
 
+\begin{frame}{Metrics}
+Designing a metric to verify accuracy
+ \begin{itemize}
+	\item
+		Conservation of momentum
+	\item
+		Conservation of energy
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{Conservation of momentum}
+    \begin{itemize}
+            \item
+                For entire system: \begin{equation} \sum_{i=1}^{n} m_i \times \vec{v_i} \end{equation}
+            \item
+                Goes well almost always, even for bad integrators
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Conservation of energy}
+    \begin{itemize}
+            \item
+            Potential energy for system: \begin{equation} W = - 1/2 \sum_{i \ne j} G \frac{m_i m_j}{|\vec{r}_i-\vec{r}_j|}\end{equation}
+            \item
+            Kinetic energy for system: \begin{equation} K=1/2 \sum_{i=1}^{N} m_i |\vec{v}_i|^2 \end{equation}
+            \item
+                $K+W$ should be constant, according to law of conservation of energy
+    \end{itemize}
+\end{frame}
 \section{Methods}
 
 \begin{frame}{Naive approach}
@@ -212,10 +235,28 @@
 
 \begin{frame}{Taylor expansion}
   One more term in the Taylor expansion, the "jerk"
+
+  \begin{itemize}
+    \item
+        position: $X(t+1) = X(t) + V(t)*h + \frac{1}{2} A(t)*h^2 + \frac{1}{6} J(t) * h^3$
+    \item
+        speed: $B(t+1) = V(t) + A(t)*h + \frac{1}{2} J(t) * h^2$
+    \item
+        acceleration: $A(t+1) = A(t) + J(t) * h$
+    \item
+        jerk: \begin{equation} j_i = G \sum_{k \neq i} m_k \left( \frac{v_k - v_i}{|r_k - r_i|^3} - 3\frac{(r_k-r_i)\left((r_k - r_i)\cdot(v_k - v_i)\right)}{|r_k - r_i|^5} \right)
+        \end{equation}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Leapfrog integration}
-  Smooth integration
+        Time reversible and better conservation of energy
+    \begin{itemize}
+        \item
+            calculates position on times $t=0, t=1, t=2$ etc.
+        \item
+            calculates velocity on times $t=1/2, t=3/2, t=5/2$ etc.
+    \end{itemize}
 \end{frame}
 
 
@@ -231,17 +272,6 @@
 
 \section{Our Results/Contribution}
 
-\begin{frame}{Comparing results}
-Designing a metric to compare our results
- \begin{itemize}
-	\item
-		Momentum
-	\item
-		Total energy
-	\item 
-		Relative energy
- \end{itemize}
-\end{frame}
 
 \begin{frame}{The experiment}
   Run the following simulations:
@@ -255,17 +285,37 @@ Designing a metric to compare our results
 
 \begin{frame}{Results}
   Comparing the relative energy error:
-  image naive with different time-scales
+  \begin{figure}
+   \includegraphics[width=0.6\paperwidth]{../results/euler_different_timesteps.png}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Results}
   Comparing the relative energy error:
-  image jerk with different time-scales
+  \begin{figure}
+   \includegraphics[width=0.6\paperwidth]{../results/jerk_different_timesteps_truncated.png}
+\end{figure}
 \end{frame}
 
 \begin{frame}{Results}
   Comparing the relative energy error:
-  image leapfrog with different time-scales
+  \begin{figure}
+   \includegraphics[width=0.6\paperwidth]{../results/leapfrog_different_timesteps.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Results}
+  Comparing the relative energy error:
+  \begin{figure}
+   \includegraphics[width=0.6\paperwidth]{../results/constant_time.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Results}
+  Comparing running time with different n:
+  \begin{figure}
+   \includegraphics[width=0.6\paperwidth]{../results/time_bodies.png}
+\end{figure}
 \end{frame}
 
 \section*{Summary}
@@ -275,7 +325,9 @@ Designing a metric to compare our results
   % Keep the summary *very short*.
   \begin{itemize}
   \item
-    The \alert{first main message} of your talk in one or two lines.
+    Acceleration, speed and position directly from jerk doesn't give more accuracy.
+\item
+    Global dynamic timestep ends up with smallest possible timestep, so isn't really dynamic in that case.
   \end{itemize}
   
   % The following outlook is optional.
@@ -285,7 +337,9 @@ Designing a metric to compare our results
     Future work
     \begin{itemize}
     \item
-      Parallelize the shit out of this
+      Parallelize 
+  \item
+      Tree simulators vs. direct simulation
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -305,20 +359,19 @@ Designing a metric to compare our results
   \beamertemplatebookbibitems
   % Start with overview books.
 
-  \bibitem{Author1990}
-    A.~Author.
-    \newblock {\em Handbook of Everything}.
-    \newblock Some Press, 1990.
  
     
   \beamertemplatearticlebibitems
   % Followed by interesting articles. Keep the list short. 
 
-  \bibitem{Someone2000}
-    S.~Someone.
-    \newblock On this and that.
-    \newblock {\em Journal of This and That}, 2(1):50--100,
-    2000.
+  \bibitem{frida2013}
+    F.~Gleisner.
+    \newblock Three solutions to the two-body problem.
+    \newblock {\em Linaeus University BSc thesis}, 
+    2013.
+\bibitem{Dehnen}
+    W.~Dehnen, J.~Read.
+    N-body simulations of gravitational dynamics.
   \end{thebibliography}
 \end{frame}
 
