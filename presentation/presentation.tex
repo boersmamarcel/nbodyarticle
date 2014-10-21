@@ -49,7 +49,7 @@
 
 
 \title[] % (optional, use only with long paper titles)
-{N-Body simulation}
+{N-Body problem}
 
 \subtitle
 {A simulation study}
@@ -151,18 +151,18 @@
 \begin{frame}{Newton}
 	\begin{itemize}
 		\item
-			Gravitation law
+			Gravitation law \begin{equation} F = G \frac{m_1m_2}{r^2}\end{equation}
 		\item 
-			Force on object
+			Net force on object \begin{equation} F = m \frac{dv}{dt} = ma \end{equation}
 	\end{itemize}
 \end{frame}
 
 \begin{frame}{Kepler}
 	\begin{itemize}
 		\item 
-			kepler orbit
+			Kepler problem: Special case of two-body system; find the position or speed
 		\item
-			blaat
+			Kepler orbit: orbit as an ellipse, parabola, or hyperbola
 	\end{itemize}
 \end{frame}
 
@@ -183,28 +183,56 @@
 \end{frame}
 
 \begin{frame}{3 Body problem}
-	Can't solve this
+	We can not solve this analytical however we can calculate the acceleratio for each body and derive the change in distance and speed from this.
+  \begin{itemize}
+    \item 
+      Gravitation law on body $i$ : \begin{equation} F_i =G \sum_{k \neq i} \frac{m_im_k(r_k - r_i)}{|r_k - r_i|^3}\end{equation}
+    \item 
+      Acceleration $i$ : \begin{equation} a_i = G \sum_{k \neq i} \frac{m_k(r_k - r_i)}{|r_k - r_i|^3}\end{equation}
+  \end{itemize}
+  then, with $h$ as a time step, we can simply derive the speed and position on $t+1$.
+  
 \end{frame}
 
 \section{Methods}
 
 \begin{frame}{Naive approach}
+  Fixed timestep $h$ and only an euler approximation
+  \begin{itemize}
+    \item
+      speed: $V(t+1) = V(t) + A(t)*h$ 
+    \item
+      position: $X(t+1) = X(t) + V(t)*h$
+    \item
+      acceleration: \begin{equation} a_i = G \sum_{k \neq i} \frac{m_k(r_k - r_i)}{|r_k - r_i|^3}\end{equation}
+  \end{itemize}
+
+  hint: first order Taylor expansion
 \end{frame}
 
 \begin{frame}{Taylor expansion}
+  One more term in the Taylor expansion, the "jerk"
 \end{frame}
 
 \begin{frame}{Leapfrog integration}
+  Smooth integration
 \end{frame}
 
 
 \begin{frame}{Dynamic time scale}
-
+  Can we improve it even further? Yes, we can!\\
+  We can use dynamic time scales, and use the minimum implied timescale for $v(t),a(t)$. \\
+  But how? With $r$ as the distance between two bodies, we can calculate the implied time scale:
+  \begin{itemize}
+    \item speed: $r/v= m/(m/s) = s$
+    \item acceleration: $\sqrt{r/a} = \sqrt{m/(m/s^2)}  = \sqrt{s^2} = s$
+  \end{itemize}
 \end{frame}
 
 \section{Our Results/Contribution}
 
 \begin{frame}{Comparing results}
+Designing a metric to compare our results
  \begin{itemize}
 	\item
 		Momentum
@@ -215,6 +243,30 @@
  \end{itemize}
 \end{frame}
 
+\begin{frame}{The experiment}
+  Run the following simulations:
+  \begin{itemize}
+    \item naive
+    \item jerk
+    \item leapfrog
+  \end{itemize}
+  with and without dynamic time scale.
+\end{frame}
+
+\begin{frame}{Results}
+  Comparing the relative energy error:
+  image naive with different time-scales
+\end{frame}
+
+\begin{frame}{Results}
+  Comparing the relative energy error:
+  image jerk with different time-scales
+\end{frame}
+
+\begin{frame}{Results}
+  Comparing the relative energy error:
+  image leapfrog with different time-scales
+\end{frame}
 
 \section*{Summary}
 
