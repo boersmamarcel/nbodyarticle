@@ -200,9 +200,12 @@ Possible checks for simulation correctness: law of momentum conservation, law of
 
 
 \subsection{Algorithms}
-Algorithms in pseudo code:
-Taylor algorithm
-etc..
+The n-body problem involves every body in a system interacting with every other body through gravity. This means that there are $\mathcal{O}(n^2)$ interactions that need to be calculated. Very broadly n-body simulators fall into two categories. The first category contains direct solvers, which simulate the gravitational interactions between all bodies directly, e.g. phiGRAPE \cite{Harfst2007357}. \\
+Alternatively, there are solvers that use a tree to represent the set of bodies in a hierarchical manner. These algorithms have each of the bodies interact with the tree instead of the full set of n-bodies. This can lead to a computational complexity of $\mathcal{O}(n \log(n))$. The Barnes-Hut algorithm is a pioneering example of this class of n-body simulation algorithms \cite{barnes1986hierarchical}.\\
+We have opted to go for a direct simulator, because the implementation of such algorithms tends to be less complex. The important part in these simulations is the determination of the force each of the bodies experiences. In direct solvers, this is done the same for each body to body interactions and the total force on a particular body is a simple summation of the forces it experiences from every other body. \\
+To determine the force between two bodies due to gravity is a second order differential equation needs to be solved. Thus numerical integrators are the key component of direct solvers.
+\subsubsection{Integrator Algorithms}
+
 
 \subsection{Implementation}
 attachment
@@ -212,6 +215,7 @@ results
 
 \section{Conclusions}
 \label{sec:conclusion}
-
+\bibliographystyle{alpha}
+\bibliography{article}
 \end{document}
 
