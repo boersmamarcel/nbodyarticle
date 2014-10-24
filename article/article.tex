@@ -190,20 +190,30 @@ perturbations in input variables and output variables. i.e. positions of other o
 Delta step influences sensitivity?....
 
 
-\subsubsection{Verify our approximation}
+\subsubsection{Model verification}
 To verify the accuracy of the simulation we can apply some fundamental conservation laws from physics to our simulation. We know based on empirical data that these laws seem to be true for the natural, so if our simulation is a faithful model of nature these laws should also be true for our simulation. If they do not, the amount our simulation fails to conserve certain values that are supposed to be conserved can be used as a metric for the error in our simulation.\\\\
 \textbf{Conservation of Momentum}\\
 Momentum is defined as the mass of an object multiplied with its velocity vector. To get the momentum of a system of n bodies you can calculate the momentum of each body and sum them all together.
 \begin{equation}
-\vec{p}_{total} = \sum_i m_i \times \vec{v_i}
+    \vec{p}_{total} = \sum_{i=1}^n m_i \times \vec{v_i}
 \end{equation}
-As long as two interacting bodies experience equal but opposite forces the conservation of momentum tends to be pretty well preserved, even if those forces are otherwise wildly inaccurate. One the one hand this means that a fundamental law is enforced with any algorithm that ends up with the same force with a body to body interaction, just in opposite direction. This will be true for the n-body algorithms covered in this paper. On the other this means that the conservation of momentum is not a useful error metric to check the accuracy of an algorithm. Hence it is not used in this paper to compare the accuracy of the studied algorithms. The measurements have been done, but show no real difference, even when it is clear that a simulation is doing things that are unrealistic and inaccurate.
-\textbf{Energy}\\
-Constraints check after each simulation round
-Possible checks for simulation correctness: law of momentum conservation, law of energy conservation, unintended orbit change
-
-
-
+As long as two interacting bodies experience equal but opposite forces the conservation of momentum tends to be pretty well preserved, even if those forces are otherwise wildly inaccurate in a simulation. On the one hand this means that a fundamental law is enforced with any algorithm that ends up with the same force with a body to body interaction for both bodies, with only the direction reversed for one of them. This will be true for the n-body algorithms covered in this paper. On the other this means that the conservation of momentum is not a useful error metric to check the accuracy of an algorithm. Hence it is not used in this paper to compare the accuracy of the studied algorithms. The measurements have been done, but show no real difference, even when it is clear that a simulation is doing things that are otherwise unrealistic and inaccurate.\\\\
+\textbf{Conservation of Energy}\\
+Energy can not be created or destroyed, which in physics is expressed in the law of conservation of energy. Energy can be converted to a different type of energy, but the total amount of energy needs to be preserved. In a system of moving point masses that only gravitationally interact (i.e. a n-body system) the energy in the system is the sum of the kinetic energies and potential energies of each of the masses in the system. This sum should remain constant in a system that has no energy added or otherwise taken away from it. \\\\
+The kinetic energy of a body is the energy it has due to its motion. The total kinetic energy of a system is the kinetic energies of all its bodies summed together.
+\begin{equation}
+    K = \frac{1}{2} \sum_{i=1}^n m_i |\vec{v_i}|^2
+\end{equation}
+The potential energy of a body is the amount of energy it experiences due to its interaction with a force field, which would be with the gravitational field in a n-body simulation. The total potential energy of a system is the sum of the potential energy of all the bodies in the system.
+\begin{equation}
+    W = -\frac{1}{2} \sum_{i=1, i \neq j}^n G \frac{m_i m_j}{|r_i - r_j|}
+\end{equation}
+The total (mechanical) energy of system is the potential and kinetic energy of the system added together, $E = W+K$. This total energy should remain constant. In a simulation this can however go wrong. For instance a body may experience a certain strong potential energy. In reality it would only experience this energy for a very short time. But in a simulation with discrete timesteps, the timestep may be longer than the time the body is supposed to experience the potential energy for. Thus it will create extra kinetic energy without that energy being based on potential energy that would be there in reality when it interact continuously with bodies rather than at discrete timesteps. \\
+At the start of a simulation the initial energy in the system can be calculated. While running the simulation the energy can be calculated again. It should match the starting energy. The difference with the starting energy is the absolute energy error, and the difference divided by the current energy is the relative energy error.
+\begin{equation}
+    E_{error} = \frac{E_{current} - E_{initial}}{E_{current}}
+\end{equation}
+This relative energy error metric can be used to see how the size of the error progresses during a simulation with a particular algorithm and how the accuracy of one algorithm compares with an other algorithm.
 \subsection{Algorithms}
 The n-body problem involves every body in a system interacting with every other body through gravity. This means that there are $\mathcal{O}(n^2)$ interactions that need to be calculated. Very broadly n-body simulators fall into two categories. The first category contains direct solvers, which simulate the gravitational interactions between all bodies directly, e.g. phiGRAPE \cite{Harfst2007357}. \\
 Alternatively, there are solvers that use a tree to represent the set of bodies in a hierarchical manner. These algorithms have each of the bodies interact with the tree instead of the full set of n-bodies. This can lead to a computational complexity of $\mathcal{O}(n \log(n))$. The Barnes-Hut algorithm is a pioneering example of this class of n-body simulation algorithms \cite{barnes1986hierarchical}.\\
