@@ -205,8 +205,14 @@ Alternatively, there are solvers that use a tree to represent the set of bodies 
 We have opted to go for a direct simulator, because the implementation of such algorithms tends to be less complex. The important part in these simulations is the determination of the force each of the bodies experiences. In direct solvers, this is done the same for each body to body interactions and the total force on a particular body is a simple summation of the forces it experiences from every other body. \\
 To determine the force between two bodies due to gravity is a second order differential equation needs to be solved. Thus numerical integrators are the key component of direct solvers.
 \subsubsection{Integrator Algorithms}
-
-
+The integrators need to solve a second order differential equation. Based on calculating the force at a current point in time acceleration for a body can be determined. Based on this acceleration the position can be updated. The most straightforward way to do this is to apply Euler's method. Based on an acceleration and a stepsize $\Delta t$ it linearly approximates the speed at time $t + \Delta t$ from the speed at time $t$. Using the speed it then updates the position at time $t+\Delta t$ by linearly extrapolating from position at time $t$.
+\begin{equation}
+    \begin{split}
+    x(t+ \Delta t) = x(t) + v(t) \Delta t \\
+    v(t+ \Delta t) = v(t) + a(t) \Delta t \\
+    \end{split}
+\end{equation}
+This integrator is appealing for its simplicity, but because it is essentially a first order taylor expansion the expected error is proportional to $\Delta t^2$.
 \subsection{Implementation}
 attachment
 \section{Experimental Results}
