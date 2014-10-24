@@ -191,8 +191,13 @@ Delta step influences sensitivity?....
 
 
 \subsubsection{Verify our approximation}
-\textbf{Momentum, angular momentum}\\
-fdsfs \\
+To verify the accuracy of the simulation we can apply some fundamental conservation laws from physics to our simulation. We know based on empirical data that these laws seem to be true for the natural, so if our simulation is a faithful model of nature these laws should also be true for our simulation. If they do not, the amount our simulation fails to conserve certain values that are supposed to be conserved can be used as a metric for the error in our simulation.\\\\
+\textbf{Conservation of Momentum}\\
+Momentum is defined as the mass of an object multiplied with its velocity vector. To get the momentum of a system of n bodies you can calculate the momentum of each body and sum them all together.
+\begin{equation}
+\vec{p}_{total} = \sum_i m_i \times \vec{v_i}
+\end{equation}
+As long as two interacting bodies experience equal but opposite forces the conservation of momentum tends to be pretty well preserved, even if those forces are otherwise wildly inaccurate. One the one hand this means that a fundamental law is enforced with any algorithm that ends up with the same force with a body to body interaction, just in opposite direction. This will be true for the n-body algorithms covered in this paper. On the other this means that the conservation of momentum is not a useful error metric to check the accuracy of an algorithm. Hence it is not used in this paper to compare the accuracy of the studied algorithms. The measurements have been done, but show no real difference, even when it is clear that a simulation is doing things that are unrealistic and inaccurate.
 \textbf{Energy}\\
 Constraints check after each simulation round
 Possible checks for simulation correctness: law of momentum conservation, law of energy conservation, unintended orbit change
@@ -205,6 +210,7 @@ Alternatively, there are solvers that use a tree to represent the set of bodies 
 We have opted to go for a direct simulator, because the implementation of such algorithms tends to be less complex. The important part in these simulations is the determination of the force each of the bodies experiences. In direct solvers, this is done the same for each body to body interactions and the total force on a particular body is a simple summation of the forces it experiences from every other body. \\
 To determine the force between two bodies due to gravity is a second order differential equation needs to be solved. Thus numerical integrators are the key component of direct solvers.
 \subsubsection{Integrator Algorithms}
+\textbf{Euler's Method}\\
 The integrators need to solve a second order differential equation. Based on calculating the force at a current point in time acceleration for a body can be determined. Based on this acceleration the position can be updated. The most straightforward way to do this is to apply Euler's method. Based on an acceleration and a stepsize $\Delta t$ it linearly approximates the speed at time $t + \Delta t$ from the speed at time $t$. Using the speed it then updates the position at time $t+\Delta t$ by linearly extrapolating from position at time $t$.
 \begin{equation}
     \begin{split}
