@@ -182,11 +182,6 @@ we can calculate $j(t)$ by taking the derivative of equation~\ref{eq:newtongravi
 Also, error of the approximation can be calculated as follows:
 
 
-\subsubsection{Sensitivity analysis}
-because we use approximations we have sensitive systems etc....
-perturbations in input variables and output variables. i.e. positions of other objects are incorrect.
-Delta step influences sensitivity?....
-
 
 \subsubsection{Model verification}
 \label{verification}
@@ -271,23 +266,59 @@ section~\ref{sec:res:euler} compares the relative error of the Euler method usin
 \label{sec:res:euler}
 To verify our model, we have defined the energy metrics. In this experiment the relative energy metric as defined in section~\ref{XXX} is used. In total we have compared four different time-steps to evaluate the performance effect of an increasing/decreasing time-step. The time-steps used are $0.001, 0.01, 0.1, 1$ and figure~\ref{fig:euler} shows a plot of the relative energy error for the \textit{model simulation time}. 
 \begin{figure}
-\label{fig:euler}
     \includegraphics[width=0.9\textwidth]{euler_different_timesteps.png}
     \caption{Relative energy error for the Euler integrator using different time-steps for a fixed total model simulation time.}
+    \label{fig:euler}
 \end{figure}
-
+As can be seen in figure~\ref{fig:euler} there is a spike around time 18 for time-step scale 1. This error has no apparent reason and in future time-steps it will decrease and stabilize around -1. Furthermore, it is interesting to see that with smaller time-step scales the total relative energy error increases faster. Meaning, that if we run the model for an infinite time the total error will explode and produce no meaning full results. This, while smaller time-step scales should increase the accuracy in terms of relative energy error. Therefore, we can conclude that the increase in accuracy does not outweighs the increase in iterations to complete the calculation. 
 
 \subsection{Taylor}
 \label{sec:res:taylor}
+Using the same energy metrics defined in section~\ref{XX} we can do the same simulation for the Taylor approximation. We expect that adding an extra term in the Taylor expansion would increase our accuracy. And in figure~\ref{fig:taylor} we can see that indeed slower increase in relative energy error than using bigger time-step scales. However, all the time-step scale converge to -1 after about 20\% of the total model simulation time. Also, we noticed that the 0.001 time-step scale converges faster to the -1 relative energy error than the 0.0001 time-step scale. Here, we can observe that decreasing the time-step by 10 does not increase the accuracy enough to compensate for the increase in number of iterations. The could be due to machine-precision, but requires further investigation to be sure.
+
+\begin{figure}
+    \includegraphics[width=0.9\textwidth]{jerk_different_timesteps_truncated.png}
+    \caption{Relative energy error for the Taylor integrator using different time-steps for a fixed total model simulation time.}
+    \label{fig:taylor}
+\end{figure}
 
 \subsection{Leapfrog}
 \label{sec:res:leapfrog}
+Using the Leapfrog integrator, which is a slight modified Euler integrator, we should expect similar results. And as can be seen in figure~\ref{fig:leapfrog}. the relative energy error shows similar results as for the Euler approximation in figure~\ref{fig:euler}. However, the magnitude of the relative energy error is higher with the Leapfrog integrator at around time-step 18. This is probably due to the approximation of the in between time-steps which the Leapfrog integrator uses. Nevertheless, the results are relatively the same as the Euler approximation and does, at least in our simulation, lead to a decrease in relative energy error.
+
+\begin{figure}
+    \includegraphics[width=0.9\textwidth]{leapfrog_different_timesteps.png}
+    \caption{Relative energy error for the Leapfrog integrator using different time-steps for a fixed total model simulation time.}
+    \label{fig:leapfrog}
+\end{figure}
+
+\subsection{Dynamic time-scales}
+Each of the models is also run with the dynamic time-scale, which calculates the global minimum time-step scale such that any two bodies can not ghost through one another. However, our experiments showed that after just a few iterations the dynamic time-scale converges to the minimum allowed time-step scale by our system. Hence, it is not useful to use the dynamic time-scales in the simulations.
 
 \subsection{All models}
 \label{sec:res:all}
+To compare all the models, i.e. Euler, Taylor and Leapfrog integrator, we setup up an experiment which uses the same time-step for all the models. The time-step is set at $0.01$ and figure~\ref{} shows the relative energy error for all models. Here we can clearly observe that the Taylor integrator gives the best results in terms of relative energy error. And as expected the Leapfrog and Euler integrator are approximately the same. 
+\begin{figure}
+    \includegraphics[width=0.9\textwidth]{constant_time.png}
+    \caption{Relative energy error for the Euler,Taylor and Leapfrog integrator using fixed time-steps for a fixed total model simulation time.}
+    \label{fig:leapfrog}
+\end{figure}
+However, the Taylor integrator comes with extra costs in computation time as can be seen in figure~\ref{fig:time}. The calculation time for calculating one extra Taylor term, i.e. the jerk, doubles the total computation time. Also, the figure shows that the increase in bodies has a quadratic behavior which is to be expected with $n^2$ complexity in the Euler integrator. 
+\begin{figure}
+    \includegraphics[width=0.9\textwidth]{constant_time.png}
+    \caption{Computation time to finish calculating the total model simulation time for a given number of bodies.}
+    \label{fig:time}
+\end{figure}
 
 \section{Conclusions}
 \label{sec:conclusion}
+We have simulated different integrators and found a metric to compare the different models with each other. However, there is not one best model to select. Depending on the intentions of the simulation different models might be more applicable. For example, when speed has more priority than accuracy the Euler model might be more appropriate. Nevertheless, this research shows the complex considerations you have to take into account to build a simulation model. Also, that theoretical improvements do not always lead to actual improvements in a computer simulation. 
+
+\section{Future work}
+For future work we would like to recommend to try a time-step scale for each body, meaning that close encounters have smaller time-step scale than other bodies. This should lead to a smaller energy error while not slowing down the whole process. Also, many calculations are suitable for parallelization to speed up the computing process. 
+
+
+
 \bibliographystyle{alpha}
 \bibliography{article}
 \end{document}
