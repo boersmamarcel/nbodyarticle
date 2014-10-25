@@ -189,6 +189,7 @@ Delta step influences sensitivity?....
 
 
 \subsubsection{Model verification}
+\label{verification}
 To verify the accuracy of the simulation we can apply some fundamental conservation laws from physics to our simulation. We know based on empirical data that these laws seem to be true for the natural, so if our simulation is a faithful model of nature these laws should also be true for our simulation. If they do not, the amount our simulation fails to conserve certain values that are supposed to be conserved can be used as a metric for the error in our simulation.\\\\
 \textbf{Conservation of Momentum}\\
 Momentum is defined as the mass of an object multiplied with its velocity vector. To get the momentum of a system of n bodies you can calculate the momentum of each body and sum them all together.
@@ -231,7 +232,27 @@ This integrator is appealing for its simplicity, but because it is essentially a
 attachment
 \section{Experimental Results}
 \label{sec:results}
-results
+The results of each model implementation are compared using the metrics designed in section~\ref{verification}. Using these methods allows us to compare the performance of each model. For all the energy comparison methods we used a fixed total \textit{model evaluation time}, i.e. we simulate 100 model minutes. Depending on the time-steps used in each method, this might take more or less iterations to calculate, meaning that the total simulation time increases. In
+section~\ref{sec:res:euler} compares the relative error of the Euler method using different time-steps. Also, section~\ref{sec:res:taylor} compares the improvement of adding an extra term in the Taylor expansion. And, section~\ref{sec:res:leapfrog} shows the results using the Leapfrog integrator and all the models are compared in the last section~\ref{sec:res:all}.
+
+\subsection{Euler}
+\label{sec:res:euler}
+To verify our model, we have defined the energy metrics. In this experiment the relative energy metric as defined in section~\ref{XXX} is used. In total we have compared four different time-steps to evaluate the performance effect of an increasing/decreasing time-step. The time-steps used are $0.001, 0.01, 0.1, 1$ and figure~\ref{fig:euler} shows a plot of the relative energy error for the \textit{model simulation time}. 
+\begin{figure}
+\label{fig:euler}
+    \includegraphics[width=0.9\textwidth]{euler_different_timesteps.png}
+    \caption{Relative energy error for the Euler integrator using different time-steps for a fixed total model simulation time.}
+\end{figure}
+
+
+\subsection{Taylor}
+\label{sec:res:taylor}
+
+\subsection{Leapfrog}
+\label{sec:res:leapfrog}
+
+\subsection{All models}
+\label{sec:res:all}
 
 \section{Conclusions}
 \label{sec:conclusion}
