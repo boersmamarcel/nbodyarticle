@@ -18,10 +18,7 @@ void Integrator::jerkIntegrator(std::vector<Particle>& particles, bool dynamic_t
     //run simulation
     for(auto& particle: particles)
     {
-        //particle.calculateAcceleration(particles, timestep);
         particle._jerk = Vec3D();
-        //_acceleration = Vec3D();
-
         particle._potentialEnergy = 0;
         const float G = 0.01;
 
@@ -63,7 +60,7 @@ void Integrator::jerkIntegrator(std::vector<Particle>& particles, bool dynamic_t
         particle._position = particle._position +  particle._velocity * timestep + particle._acceleration*timestep*timestep/2 + (particle._jerk*timestep*timestep*timestep)/6;
         particle._velocity = particle._velocity + particle._acceleration * timestep + (particle._jerk*timestep*timestep)/2;
 
-        const int historySize = 20;
+        const int historySize = 40;
         particle._positionHistory.push_back(particle._position);
         if (particle._positionHistory.size() > historySize)
         {
@@ -114,7 +111,7 @@ void Integrator::naiveIntegrator(std::vector<Particle>& particles, bool dynamic_
         particle._position = particle._position +  particle._velocity * timestep;
         particle._velocity = particle._velocity + particle._acceleration * timestep;
 
-        const int historySize = 20;
+        const int historySize = 40;
         particle._positionHistory.push_back(particle._position);
         if (particle._positionHistory.size() > historySize)
         {
@@ -166,7 +163,7 @@ void Integrator::leapfrogIntegrator(std::vector<Particle>& particles, bool dynam
         particle._position = particle._position +  particle._velocity * timestep + particle._prevAcceleration * 0.5 * timestep * timestep;
         particle._velocity = particle._velocity + (particle._acceleration + particle._prevAcceleration) * 0.5 * timestep;
 
-        const int historySize = 20;
+        const int historySize = 40;
         particle._positionHistory.push_back(particle._position);
         if (particle._positionHistory.size() > historySize)
         {
