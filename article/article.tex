@@ -239,14 +239,21 @@ section~\ref{sec:res:euler} compares the relative error of the Euler method usin
 \label{sec:res:euler}
 To verify our model, we have defined the energy metrics. In this experiment the relative energy metric as defined in section~\ref{XXX} is used. In total we have compared four different time-steps to evaluate the performance effect of an increasing/decreasing time-step. The time-steps used are $0.001, 0.01, 0.1, 1$ and figure~\ref{fig:euler} shows a plot of the relative energy error for the \textit{model simulation time}. 
 \begin{figure}
-\label{fig:euler}
     \includegraphics[width=0.9\textwidth]{euler_different_timesteps.png}
     \caption{Relative energy error for the Euler integrator using different time-steps for a fixed total model simulation time.}
+    \label{fig:euler}
 \end{figure}
-
+As can be seen in figure~\ref{fig:euler} there is a spike around time 18 for time-step scale 1. This error has no apparent reason and in future time-steps it will decrease and stabilize around -1. Furthermore, it is interesting to see that with smaller time-step scales the total relative energy error increases faster. Meaning, that if we run the model for an infinite time the total error will explode and produce no meaning full results. This, while smaller time-step scales should increase the accuracy in terms of relative energy error. Therefore, we can conclude that the increase in accuracy does not outweighs the increase in iterations to complete the calculation. 
 
 \subsection{Taylor}
 \label{sec:res:taylor}
+Using the same energy metrics defined in section~\ref{XX} we can do the same simulation for the Taylor approximation. We expect that adding an extra term in the Taylor expansion would increase our accuracy. And in figure~\ref{fig:taylor} we can see that indeed slower increase in relative energy error than using bigger time-step scales. However, all the time-step scale converge to -1 after about 20\% of the total model simulation time. Also, we noticed that the 0.001 time-step scale converges faster to the -1 relative energy error than the 0.0001 time-step scale. Here, we can observe that decreasing the time-step by 10 does not increase the accuracy enough to compensate for the increase in number of iterations. The could be due to machine-precision, but requires further investigation to be sure.
+
+\begin{figure}
+    \includegraphics[width=0.9\textwidth]{jerk_different_timesteps_truncated.png}
+    \caption{Relative energy error for the Taylor integrator using different time-steps for a fixed total model simulation time.}
+    \label{fig:taylor}
+\end{figure}
 
 \subsection{Leapfrog}
 \label{sec:res:leapfrog}
