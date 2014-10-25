@@ -265,24 +265,33 @@ Using the Leapfrog integrator, which is a slight modified Euler integrator, we s
     \label{fig:leapfrog}
 \end{figure}
 
+\subsection{Dynamic time-scales}
+Each of the models is also run with the dynamic time-scale, which calculates the global minimum time-step scale such that any two bodies can not ghost through one another. However, our experiments showed that after just a few iterations the dynamic time-scale converges to the minimum allowed time-step scale by our system. Hence, it is not useful to use the dynamic time-scales in the simulations.
+
 \subsection{All models}
 \label{sec:res:all}
-To compare all the models, i.e. Euler, Taylor and Leapfrog integrator, we setup up an experiment which uses the same time-step for all the models. The time-step is set at $0.01$ and figure~\ref{} shows the relative energy error for all models. Here we can clearly observe that the Taylor integrator gives the best results in terms of relative energy error. And as expected the Leapfrog and Euler integrator are approximately the same. However, the Taylor approximation comes with extra costs in computation time which will be discussed next.
-
+To compare all the models, i.e. Euler, Taylor and Leapfrog integrator, we setup up an experiment which uses the same time-step for all the models. The time-step is set at $0.01$ and figure~\ref{} shows the relative energy error for all models. Here we can clearly observe that the Taylor integrator gives the best results in terms of relative energy error. And as expected the Leapfrog and Euler integrator are approximately the same. 
 \begin{figure}
     \includegraphics[width=0.9\textwidth]{constant_time.png}
     \caption{Relative energy error for the Euler,Taylor and Leapfrog integrator using fixed time-steps for a fixed total model simulation time.}
     \label{fig:leapfrog}
 \end{figure}
-
-
-\subsection{Complexity}
-\label{sec:res:complexity}
-
-
+However, the Taylor integrator comes with extra costs in computation time as can be seen in figure~\ref{fig:time}. The calculation time for calculating one extra Taylor term, i.e. the jerk, doubles the total computation time. Also, the figure shows that the increase in bodies has a quadratic behavior which is to be expected with $n^2$ complexity in the Euler integrator. 
+\begin{figure}
+    \includegraphics[width=0.9\textwidth]{constant_time.png}
+    \caption{Computation time to finish calculating the total model simulation time for a given number of bodies.}
+    \label{fig:time}
+\end{figure}
 
 \section{Conclusions}
 \label{sec:conclusion}
+We have simulated different integrators and found a metric to compare the different models with each other. However, there is not one best model to select. Depending on the intentions of the simulation different models might be more applicable. For example, when speed has more priority than accuracy the Euler model might be more appropriate. Nevertheless, this research shows the complex considerations you have to take into account to build a simulation model. Also, that theoretical improvements do not always lead to actual improvements in a computer simulation. 
+
+\section{Future work}
+
+
+
+
 \bibliographystyle{alpha}
 \bibliography{article}
 \end{document}
