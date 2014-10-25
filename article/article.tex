@@ -70,7 +70,7 @@ Or, in more general terms we need to know how objects orbiting other objects wor
 Although, it is not a new problem, because we have been trying to analyze how planets orbit each other in our own solar system for quite while, there is still room for improvement.
 The analytical solution for orbiting planets are only purposed for 2-body system, while in reality we have to cope with N-body systems. Approximation methods can be used only calculating is intractable by hand. Hence, the use of computers is promising for solving N-body systems. However, using computers and approximation methods comes with different types of problems, i.e. how accurate is my approximation method as well as the physical limitations of computers in terms of floating point operations.
 
-This research is aims to provide insight in the approximation methods used for 2-body systems, i.e. how accurate is the simulation. 
+This research is aims to provide insight in the approximation methods used for N-body systems, i.e. how accurate is the simulation. 
 In section~\ref{sec:literature} the background of the analytical models used are explained and section~\ref{sec:methodology} introduces the algorithms as well a methods for benchmarking our approximation methods. The results are shown in section~\ref{sec:results} and section~\ref{sec:conclusion} our conclusion is discussed.
 
 \section{Background}
@@ -78,7 +78,7 @@ In section~\ref{sec:literature} the background of the analytical models used are
 In pursuance of calculating the trajectory of a body it is necessary to know which forces interact with our body. Newton's seconds law, i.e. the rate of change is equal to the net force on a object, is used to describe the force on our object. And Newton's third law, i.e. action = - reaction, is used. 
 
 \subsection{Newton's laws}
-Newton's second law describes that the force on an object is equal to the change of momentum in time. Because we only consider constant mass systems this is equal to the mass times the acceleration of an object. Thus, if the object is accelerating there is an force on our object present. Knowing that the only possible object acting on our object are the other planets in the system we can modify the second law to derive the law of universal gravitation. Let the following equation be the force $F_p$ on object $p$ by object $c$ with mass $m_p,m_c$ respectively.   
+Newton's second law describes that the force on an object is equal to the change of momentum in time. Because we only consider constant mass systems this is equal to the mass times the acceleration of an object. Thus, if the object is accelerating there is a force on our object present. Knowing that the only possible object acting on our object are the other planets in the system we can modify the second law to derive the law of universal gravitation. Let the following equation be the force $F_p$ on object $p$ by object $c$ with mass $m_p,m_c$ respectively.   
 \begin{equation}
     \label{eq:newtongravity}
  F_p = G\frac{m_pm_c}{r^2}
@@ -121,7 +121,7 @@ with $P$ as the total momentum and $M$ as the total mass of the system. We know 
 \begin{equation}
 	P = m_p\overrightarrow{v_p} + m_c\overrightarrow{v_c} = 0.
 \end{equation}
-As illustrated in figure~\ref{XXXX}(simple two body system with vectors drawn) we can see that each body has several forces acted upon. Our objective is the determine the path of body $p,c$ and as you can see we have a force vector $F_x$ pulling the body $X$ to the center and also our velocity vector $v_x$. The product of those vectors gives us the directional vector of our body $X$. Due to the fact that the two bodies are the only objects in the system acting on eachother we can determine the radius and period of our movement around a (virtual) center of mass. We know for a fact that the two bodies must be the opposites of eachother such that the total momentum is equal to zero. The center of mass can be calculated in reference of one of our bodies.  (bary center)
+As illustrated in figure~\ref{XXXX}(simple two body system with vectors drawn) we can see that each body has several forces acted upon. Our objective is the determine the path of body $p,c$ and as you can see we have a force vector $F_x$ pulling the body $X$ to the center and also our velocity vector $v_x$. The product of those vectors gives us the directional vector of our body $X$. Due to the fact that the two bodies are the only objects in the system acting on each other we can determine the radius and period of our movement around a (virtual) center of mass. We know for a fact that the two bodies must be the opposites of each other such that the total momentum is equal to zero. The center of mass can be calculated in reference of one of our bodies.  (Bary center)
 \begin{equation}
 	(m_p + m_c)\overrightarrow{r_{m}} = m_p\overrightarrow{r_p} + m_c\overrightarrow{r_c} 
 \end{equation}
@@ -133,8 +133,6 @@ and we will calculate the $\overrightarrow{r_m}$ with as reference point our bod
 \begin{equation}
 	\overrightarrow{r_m} = \frac{m_p}{M}\overrightarrow{R}
 \end{equation}
-force times direction (unit vector) see albana notes on slide
-Calculate $a_i$ for each body i.
 
 
 If we want to know the force of body $p$ on body $c$ we can use Newton's law of gravitation, see equation~\ref{eq:newtongravity}.  We can fill in the masses of bodies $p,c$ using the fact that $F_c = m_c a_c$ we obtain
@@ -151,7 +149,7 @@ Now that we have derived the acceleration in terms of the mass of $p$ and the di
 So the new position can be derived by taking the position at time $t=0$ plus the distance traveled during $\delta t$. This can be obtained by taking the double integral of the acceleration. This can be solved analytically when only considering two bodies. If you consider $n \geq 3$ bodies it becomes unsolvable analytically. 
 \subsection{Discrete Approximation}
 The N-body system for more than 2 bodies can not be solved analytically, hence we must use approximation methods to calculate the solution.
-We want to obtain the new positions of our bodies at time $t+1$ by using Newton's second law. We can derive the next position by adding the distance traveled in time $\Delta t$ to the old position at $x_t$, i.e. $x_{t+1} = x_t + v_t*\Delta t$ wit $v_t$ as the speed at time $t$. Nonetheless, we do not know speed $v_t$ but this can be obtained by $v_t = v_t + a_t \Delta t$ and $a_t$ is known for our body. The next section describes an even more accurate approach for $x_t$.
+We want to obtain the new positions of our bodies at time $t+1$ by using Newton's second law. We can derive the next position by adding the distance traveled in time $\Delta t$ to the old position at $x_t$, i.e. $x_{t+1} = x_t + v_t*\Delta t$ with $v_t$ as the speed at time $t$. Nonetheless, we do not know speed $v_t$ but this can be obtained by $v_t = v_t + a_t \Delta t$ and $a_t$ is known for our body. The next section describes an even more accurate approach for $x_t$.
 
 \subsubsection{Taylor expansion}
 If we want to approximate the values of, for example, formula $f(x)$ at point $a$ we can use a Taylor expansion defined as
