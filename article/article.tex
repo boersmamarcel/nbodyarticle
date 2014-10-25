@@ -223,11 +223,43 @@ To determine the force between two bodies due to gravity is a second order diffe
 The integrators need to solve a second order differential equation. Based on calculating the force at a current point in time acceleration for a body can be determined. Based on this acceleration the position can be updated. The most straightforward way to do this is to apply Euler's method. Based on an acceleration and a stepsize $\Delta t$ it linearly approximates the speed at time $t + \Delta t$ from the speed at time $t$. Using the speed it then updates the position at time $t+\Delta t$ by linearly extrapolating from position at time $t$.
 \begin{equation}
     \begin{split}
-    x(t+ \Delta t) = x(t) + v(t) \Delta t \\
-    v(t+ \Delta t) = v(t) + a(t) \Delta t \\
+        x_{t+ 1} = x_t + v_t \Delta t \\
+        v_{t+ 1} = v_t + a_t \Delta t \\
     \end{split}
 \end{equation}
-This integrator is appealing for its simplicity, but because it is essentially a first order taylor expansion the expected error is proportional to $\Delta t^2$.
+This integrator is appealing for its simplicity, but because it is essentially a first order taylor expansion the expected error is proportional to $\Delta t^2$.\\\\
+\textbf{Jerk Integrator}\\
+It has been shown that through Newton's laws of gravity and mechanics you can calculate a body's acceleration based on the position of the other bodies. Acceleration is the second derivative of position, so it needs to be integrated twice to update the position of a body. \\\\
+It is however also possible to directly calculate the third derivative of the position, the so-called jerk. The jerk is also the first derivative of the acceleration and can thus be obtained by differentiating the acceleration once with respect to time.
+\begin{align}
+    \vec{j_i} = \frac{d}{dt} \vec{a_i} &= \frac{d}{dt} \left( G \sum_{k=1, k \neq i}^n \frac{m_k (\vec{r_k} - \vec{r_i})}{|\vec{r_k} - \vec{r_i}|^3} \right) \\
+                                       &= G \sum_{k=1, k \neq i} m_k \left( \frac{\vec{v_k} - \vec{v_i}}{|\vec{r_k} - \vec{r_i}|^3} - 3 \frac{(\vec{r_k} - \vec{r_i})\left((\vec{r_k} - \vec{r_i})\cdot (\vec{v_k} - \vec{v_i}) \right)}{|\vec{r_k} - \vec{r_i}|^5} \right)
+\end{align}
+Using the calculated jerk, the updated acceleration, velocity and position can be approximated.
+\begin{equation}
+    \begin{split}
+        x_{t+ 1} = x_t + v_t \Delta t + \frac{1}{2} a_t (\Delta t)^2 + \frac{1}{6} j_t (\Delta t)^3 \\
+        v_{t+ 1} = v_t a_t \Delta t + \frac{1}{2} j_t (\Delta t)^2 \\
+        a_{t+ 1} = a_t + j_t \Delta t \\
+    \end{split}
+\end{equation}
+\\\\
+\textbf{Leapfrog Integrator}\\
+The leapfrog integrator calculates the positions and velocities of the bodies in a simulated system at interleaved timesteps. 
+\begin{equation}
+    \begin{split}
+        x_{t+ 1} = x_t + v_{t+1/2} \Delta t \\
+        v_{t+ 1/2} = v_{t-1/2} + a_t \Delta t \\
+    \end{split}
+\end{equation}
+According to the literature (e.g. \cite{1995ApJ...443L..93H}) this can be rewritten in a form where all variables are evaluated at the same time.
+\begin{equation}
+    \begin{split}
+        x_{t+ 1} = x_t + v_t \Delta t  + \frac{1}{2} a_t (\Delta t)^2\\
+        v_{t+ 1} = v_t + \frac{a_t + a_{t+1}}{2} \Delta t \\
+    \end{split}
+\end{equation}
+One of the appealing characteristics of the leapfrog integrator is that it is time-symmetric. This means that if you let it run forward for a certain number of steps and then run it in reverse it should end up at the same initial starting state. This is supposed to improve its energy conservation properties.
 \subsection{Implementation}
 attachment
 \section{Experimental Results}
