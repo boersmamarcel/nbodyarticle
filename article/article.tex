@@ -67,18 +67,18 @@ Commonly used technology in everyday life is supported by satellites, e.g. GPS i
 And with increasingly more satellites orbiting the earth it is important that we know that a new satellite will not crash into another.
 Or, in more general terms we need to know how objects orbiting other objects work such that we can launch more satellites.
 
-Although, it is not a new problem, because we have been trying to analyze how planets orbit each other in our own solar system for quite while, there is still room for improvement.
-The analytical solution for orbiting planets are only purposed for 2-body system, while in reality we have to cope with N-body systems. Approximation methods can be used only calculating is intractable by hand. Hence, the use of computers is promising for solving N-body systems. However, using computers and approximation methods comes with different types of problems, i.e. how accurate is my approximation method as well as the physical limitations of computers in terms of floating point operations.
+It is not a new problem, because we have been trying to analyze how planets orbit each other in our own solar system for quite while, there is still room for improvement.
+The analytical solution for orbiting planets  only exist for 2-body system, while in reality we have to cope with N-body systems. Approximation methods can be used only calculating is intractable by hand. Hence, the use of computers is promising for solving N-body systems. However, using computers and approximation methods comes with different types of problems, i.e. how accurate is my approximation method as well as the physical limitations of computers in terms of floating point operations.
 
-This research is aims to provide insight in the approximation methods used for N-body systems, i.e. how accurate is the simulation. 
+This research aims to provide insight with regards to the approximation methods used for N-body systems, i.e. how accurate is the simulation. 
 In section~\ref{sec:literature} the background of the analytical models used are explained and section~\ref{sec:methodology} introduces the algorithms as well a methods for benchmarking our approximation methods. The results are shown in section~\ref{sec:results} and section~\ref{sec:conclusion} our conclusion is discussed.
 
 \section{Background}
 \label{sec:literature}
-In pursuance of calculating the trajectory of a body it is necessary to know which forces interact with our body. Newton's seconds law, i.e. the rate of change is equal to the net force on a object, is used to describe the force on our object. And Newton's third law, i.e. action = - reaction, is used. 
+When calculating the trajectory of a body it is necessary to know which forces interact with our body. Newton's seconds law, i.e. the acceleration is equal to the net force on a object, is used to describe the force on our object. And Newton's third law, i.e. every action has an equal and opposite reaction, is used. 
 
 \subsection{Newton's laws}
-Newton's second law describes that the force on an object is equal to the change of momentum in time. Because we only consider constant mass systems this is equal to the mass times the acceleration of an object. Thus, if the object is accelerating there is a force on our object present. Knowing that the only possible object acting on our object are the other planets in the system we can modify the second law to derive the law of universal gravitation. Let the following equation be the force $F_p$ on object $p$ by object $c$ with mass $m_p,m_c$ respectively.   
+Newton's second law describes that the force on an object is equal to the change of momentum in time. Because we only consider constant mass systems this is equal to the mass times the acceleration of an object. Thus, if the object is accelerating there is a force on our object present. Knowing that the only possible force acting on our object are originating from other bodies in the system we can modify the second law by equating the law of universal gravitation to it. Let the following equation be the force $F_p$ on object $p$ by object $c$ with mass $m_p,m_c$ respectively.   
 \begin{equation}
     \label{eq:newtongravity}
  F_p = G\frac{m_pm_c}{r^2}
@@ -86,7 +86,10 @@ Newton's second law describes that the force on an object is equal to the change
 With $r$ as the euclidean distance between object $p,c$. Combining Newton's second law with the law of universal gravitation gives the acceleration $a_p$ of object $p$
 \begin{equation}
     \label{eq:newtongravity}
-	a_p = G\frac{m_pm_c}{ m_pr^2}
+    \begin{split}
+	a_p = G\frac{m_pm_c}{ m_pr^2} \\
+	= G\frac{m_c}{r^2}
+    \end{split}
 \end{equation}.
 The third law states that if there is a force $F_1$ then there also exists a force $F_2$ such that $F_2 = - F_1$. 
 
@@ -96,36 +99,20 @@ In the next section a simple 2-body system is introduced for thorough understand
 \section{Methodology}
 \label{sec:methodology}
 To understand the consequences of our approximation methods we first need to understand the analytical solution of a 2-body system. Next, we assume a simple two body system with an analytical solution and we will apply Newton's law to obtain the trajectory of our objects. Remark that this is special simple case designed to provided better understanding of orbiting objects, this is required to understand the effects of discrete approximation methods in our simulations. \\
-\indent Assume we have a 2 body system called Pluto-Charon system. Figure~\ref{fig:plutocharon} illustrates this system at a fixed time point $t$
-\begin{figure*}
-	\label{fig:plutocharon}
-\end{figure*}
-with both $x,y$ coordinates in our 2D space.
-
-% Assume that we have an initial velocity vector $\overrightarrow{v_t}$ for the body t with speed in both x and y direction.
-% \begin{equation}
-% 	\overrightarrow{v_t} = \begin{bmatrix}
-% 								x_t \\
-% 								y_t
-% 							\end{bmatrix}
-% \end{equation}
-% For example we have a two body system with $p,c$ with an initial velocity vector, respectively, then
-% \begin{equation}
-% 	v_p=\begin{bmatrix} v_x^p \\ v_y^p \end{bmatrix}, v_c=\begin{bmatrix} v_x^c \\ v_y^c \end{bmatrix}
-% \end{equation}
+\indent Assume we have a 2 body system called Pluto-Charon system. 
 We assume that the whole system has a constant velocity, in our case we assume zero velocity, hence the next equation must be equal to zero
 \begin{equation}
 	V = \frac{P}{M}	
 \end{equation}
-with $P$ as the total momentum and $M$ as the total mass of the system. We know that the total momentum is the sum of all forces acted up on and the mass is a constant. Therefore, our zero velocity implies that the total momentum must be equal to zero. Or more formally
+with $P$ as the total momentum and $M$ as the total mass of the system. We know that the total momentum is the sum of all forces acted upon and the mass is a constant. Therefore, our zero velocity implies that the total momentum must be equal to zero. Or more formally
 \begin{equation}
 	P = m_p\overrightarrow{v_p} + m_c\overrightarrow{v_c} = 0.
 \end{equation}
-As illustrated in figure~\ref{XXXX}(simple two body system with vectors drawn) we can see that each body has several forces acted upon. Our objective is the determine the path of body $p,c$ and as you can see we have a force vector $F_x$ pulling the body $X$ to the center and also our velocity vector $v_x$. The product of those vectors gives us the directional vector of our body $X$. Due to the fact that the two bodies are the only objects in the system acting on each other we can determine the radius and period of our movement around a (virtual) center of mass. We know for a fact that the two bodies must be the opposites of each other such that the total momentum is equal to zero. The center of mass can be calculated in reference of one of our bodies.  (Bary center)
+Each body has several forces acted upon. Our objective is to determine the path of body $p,c$ and we have a force vector $F_x$ pulling a body $X$ to the other planet and also a velocity vector $v_x$ for each body. The product of those vectors gives us a directional vector of, for example, body $X$. The center of mass can be calculated relative to one of our bodies.
 \begin{equation}
 	(m_p + m_c)\overrightarrow{r_{m}} = m_p\overrightarrow{r_p} + m_c\overrightarrow{r_c} 
 \end{equation}
-With $r_m$ being the vector to the center of mass, the we can rewrite this to calculate $r_m$
+With $r_m$ being the vector to the center of mass, then we can rewrite this to calculate $r_m$
 \begin{equation}
 	\overrightarrow{r_m} = \frac{m_p\overrightarrow{r_p} + m_c\overrightarrow{r_c}}{(m_p + m_c)}
 \end{equation}
@@ -133,8 +120,6 @@ and we will calculate the $\overrightarrow{r_m}$ with as reference point our bod
 \begin{equation}
 	\overrightarrow{r_m} = \frac{m_p}{M}\overrightarrow{R}
 \end{equation}
-
-
 If we want to know the force of body $p$ on body $c$ we can use Newton's law of gravitation, see equation~\ref{eq:newtongravity}.  We can fill in the masses of bodies $p,c$ using the fact that $F_c = m_c a_c$ we obtain
 \begin{equation}
     \begin{split}
@@ -142,14 +127,14 @@ If we want to know the force of body $p$ on body $c$ we can use Newton's law of 
      a_c = G\frac{m_p}{r^2} \\
     \end{split}
 \end{equation}
-Now that we have derived the acceleration in terms of the mass of $p$ and the distance between the bodies $r$, we can use this calculate the acceleration of body $c$. The change of position i.e. distance of body $c$ at time $\delta t$ is given by
+Now that we have derived the acceleration in terms of the mass of $p$ and the distance between the bodies $r$, we can use this calculate the acceleration of body $c$. The change of position i.e. distance of body $c$ at time $\Delta t$ is given by
 \begin{equation}
     \frac{d^2}{dt^2} r_c = G \frac{m_p}{r^2}
 \end{equation}
-So the new position can be derived by taking the position at time $t=0$ plus the distance traveled during $\delta t$. This can be obtained by taking the double integral of the acceleration. This can be solved analytically when only considering two bodies. If you consider $n \geq 3$ bodies it becomes unsolvable analytically. 
+So the new position can be derived by taking the position at time $t=0$ plus the distance traveled during $\delta t$. This can be obtained by taking the double integral of the acceleration. This can be solved analytically when only considering two bodies \cite{frida2013}. If you consider $n \geq 3$ bodies it becomes unsolvable analytically. 
 \subsection{Discrete Approximation}
 The N-body system for more than 2 bodies can not be solved analytically, hence we must use approximation methods to calculate the solution.
-We want to obtain the new positions of our bodies at time $t+1$ by using Newton's second law. We can derive the next position by adding the distance traveled in time $\Delta t$ to the old position at $x_t$, i.e. $x_{t+1} = x_t + v_t*\Delta t$ with $v_t$ as the speed at time $t$. Nonetheless, we do not know speed $v_t$ but this can be obtained by $v_t = v_t + a_t \Delta t$ and $a_t$ is known for our body. The next section describes an even more accurate approach for $x_t$.
+We want to obtain the new positions of our bodies at time $t+1$ by using Newton's second law. We can derive the next position by adding the distance traveled in time $\Delta t$ to the old position at $x_t$, i.e. $x_{t+1} = x_t + v_t\Delta t$ with $v_t$ as the speed at time $t$. Nonetheless, we do not know speed $v_t$ but this can be obtained by $v_t = v_t + a_t \Delta t$ and $a_t$ is known for our body. The next section describes an even more accurate approach for $x_t$.
 
 \subsubsection{Taylor expansion}
 If we want to approximate the values of, for example, formula $f(x)$ at point $a$ we can use a Taylor expansion defined as
@@ -169,48 +154,46 @@ notice that $x^{(1)}(t)$ is the derivative of $x(t)$ which is equal to the veloc
 \begin{equation}
     \begin{split}
         v(t) =  \frac{v^{(0)}(t)}{0!}(x-t)^0 + \frac{v^{(1)}(t)}{1!}(x-t)^1 +\frac{v^{(2)}(t)}{2!}(x-t)^2\\
-        v(t) = v(0) + a(t) + j(t)
+        v(t) = v(t) + a(t)(x-t) + \frac{1}{2}j(t)(x-t)^2
     \end{split}
 \end{equation}
 \begin{equation}
     \begin{split}
         a(t) =  \frac{a^{(0)}(t)}{0!}(x-t)^0 + \frac{a^{(1)}(t)}{1!}(x-t)^1 \\
-        a(t) =  a(0) + j(t) 
+        a(t) =  a(t) + j(t)(x-t)
     \end{split}
 \end{equation}
 we can calculate $j(t)$ by taking the derivative of equation~\ref{eq:newtongravity} with respect to $a$. Thus obtaining more accurate results for our $x(t), v(t)$ and $a(t)$.
-Also, error of the approximation can be calculated as follows:
-
-
 
 \subsubsection{Model verification}
 \label{verification}
 To verify the accuracy of the simulation we can apply some fundamental conservation laws from physics to our simulation. We know based on empirical data that these laws seem to be true for the natural world, so if our simulation is a faithful model of nature these laws should also be true for our simulation. If they do not, the amount our simulation fails to conserve certain values that are supposed to be conserved can be used as a metric for the error in our simulation.\\\\
 \textbf{Conservation of Momentum}\\
-Momentum is defined as the mass of an object multiplied with its velocity vector. To get the momentum of a system of n bodies you can calculate the momentum of each body and sum them all together.
+Momentum is defined as the mass of an object multiplied with its velocity vector. To get the momentum of a system of N-bodies you can calculate the momentum of each body and sum them all together.
 \begin{equation}
     \vec{p}_{total} = \sum_{i=1}^n m_i \times \vec{v_i}
 \end{equation}
-As long as two interacting bodies experience equal but opposite forces the conservation of momentum tends to be pretty well preserved, even if those forces are otherwise wildly inaccurate in a simulation. On the one hand this means that a fundamental law is enforced with any algorithm that ends up with the same force with a body to body interaction for both bodies, with only the direction reversed for one of them. This will be true for the n-body algorithms covered in this paper. On the other this means that the conservation of momentum is not a useful error metric to check the accuracy of an algorithm. Hence it is not used in this paper to compare the accuracy of the studied algorithms. The measurements have been done, but show no real difference, even when it is clear that a simulation is doing things that are otherwise unrealistic and inaccurate.\\\\
+As long as two interacting bodies experience equal but opposite forces the conservation of momentum tends to be pretty well preserved, even if those forces are otherwise wildly inaccurate in a simulation. On the one hand this means that a fundamental law is enforced with any algorithm that ends up with the same force with a body to body interaction for both bodies, with only the direction reversed for one of them. This will be true for the N-body algorithms covered in this paper. On the other hand this means that the conservation of momentum is not a useful error metric to check the accuracy of an algorithm. \\\\
 \textbf{Conservation of Energy}\\
-Energy can not be created or destroyed, which in physics is expressed in the law of conservation of energy. Energy can be converted to a different type of energy, but the total amount of energy needs to be preserved. In a system of moving point masses that only gravitationally interact (i.e. a n-body system) the energy in the system is the sum of the kinetic energies and potential energies of each of the masses in the system. This sum should remain constant in a system that has no energy added or otherwise taken away from it. \\\\
+Energy can not be created or destroyed, which in physics is expressed in the law of conservation of energy. Energy can be converted to a different type of energy, but the total amount of energy needs to be preserved. In a system of moving point masses that only gravitationally interact (i.e. an N-body system) the energy in the system is the sum of the kinetic energies and potential energies of each of the masses in the system. This sum should remain constant in a system that has no energy added or otherwise taken away from it. \\\\
 The kinetic energy of a body is the energy it has due to its motion. The total kinetic energy of a system is the kinetic energies of all its bodies summed together.
 \begin{equation}
     K = \frac{1}{2} \sum_{i=1}^n m_i |\vec{v_i}|^2
 \end{equation}
-The potential energy of a body is the amount of energy it experiences due to its interaction with a force field, which would be with the gravitational field in a n-body simulation. The total potential energy of a system is the sum of the potential energy of all the bodies in the system.
+The potential energy of a body is the amount of energy it experiences due to its interaction with a force field, which would be with the gravitational field in a N-body simulation. The total potential energy of a system is the sum of the potential energy of all the bodies in the system.
 \begin{equation}
     W = -\frac{1}{2} \sum_{i=1, i \neq j}^n G \frac{m_i m_j}{|r_i - r_j|}
 \end{equation}
-The total (mechanical) energy of a system is the potential and kinetic energy of the system added together, $E = W+K$. This total energy should remain constant. In a simulation this can however go wrong. For instance a body may experience a certain strong potential energy. In reality it would only experience this energy for a very short time. But in a simulation with discrete timesteps, the timestep may be longer than the time the body is supposed to experience the potential energy for. Thus it will create extra kinetic energy without that energy being based on potential energy that would be there in reality when it interact continuously with bodies rather than at discrete timesteps. \\
+The total (mechanical) energy of a system is the potential and kinetic energy of the system added together, $E = W+K$. This total energy should remain constant. In a simulation this can however go wrong. For instance a body may experience a certain strong potential energy. In reality it would only experience this energy for a very short time. But in a simulation with discrete time-steps, the time-step may be longer than the time the body is supposed to experience the potential energy for. Thus it will create extra kinetic energy without that energy being based on potential energy that would be there in reality when it interact continuously with bodies rather than at discrete time-steps. \\
 At the start of a simulation the initial energy in the system can be calculated. While running the simulation the energy can be calculated again. It should match the starting energy. The difference with the starting energy is the absolute energy error, and the difference divided by the current energy is the relative energy error.
 \begin{equation}
+    \label{eq:energyerror}
     E_{error} = \frac{E_{current} - E_{initial}}{E_{current}}
 \end{equation}
 This relative energy error metric can be used to see how the size of the error progresses during a simulation with a particular algorithm and how the accuracy of one algorithm compares with an other algorithm.
 \subsection{Algorithms}
-The n-body problem involves every body in a system interacting with every other body through gravity. This means that there are $\mathcal{O}(n^2)$ interactions that need to be calculated. Very broadly n-body simulators fall into two categories. The first category contains direct solvers, which simulate the gravitational interactions between all bodies directly, e.g. phiGRAPE \cite{Harfst2007357}. \\
-Alternatively, there are solvers that use a tree to represent the set of bodies in a hierarchical manner. These algorithms have each of the bodies interact with the tree instead of the full set of n-bodies. This can lead to a computational complexity of $\mathcal{O}(n \log(n))$. The Barnes-Hut algorithm is a pioneering example of this class of n-body simulation algorithms \cite{barnes1986hierarchical}.\\
+The N-body problem involves every body in a system interacting with every other body through gravity. This means that there are $\mathcal{O}(n^2)$ interactions that need to be calculated. Very broadly N-body simulators fall into two categories. The first category contains direct solvers, which simulate the gravitational interactions between all bodies directly, e.g. phiGRAPE \cite{Harfst2007357}. \\
+Alternatively, there are solvers that use a tree to represent the set of bodies in a hierarchical manner. These algorithms have each of the bodies interact with the tree instead of the full set of N-bodies. This can lead to a computational complexity of $\mathcal{O}(n \log(n))$. The Barnes-Hut algorithm is a pioneering example of this class of N-body simulation algorithms \cite{barnes1986hierarchical}.\\
 We have opted to go for a direct simulator, because the implementation of such algorithms tends to be less complex. The important part in these simulations is the determination of the force each of the bodies experiences. In direct solvers, this is done the same for each body to body interaction and the total force on a particular body is a simple summation of the forces it experiences from every other body. \\
 To determine the force between two bodies due to gravity a second order differential equation needs to be solved. Thus numerical integrators are the key component of direct solvers.
 \subsubsection{Integrator Algorithms}
@@ -234,13 +217,13 @@ Using the calculated jerk, the updated acceleration, velocity and position can b
 \begin{equation}
     \begin{split}
         x_{t+ 1} = x_t + v_t \Delta t + \frac{1}{2} a_t (\Delta t)^2 + \frac{1}{6} j_t (\Delta t)^3 \\
-        v_{t+ 1} = v_t a_t \Delta t + \frac{1}{2} j_t (\Delta t)^2 \\
+        v_{t+ 1} = v_t + a_t \Delta t + \frac{1}{2} j_t (\Delta t)^2 \\
         a_{t+ 1} = a_t + j_t \Delta t \\
     \end{split}
 \end{equation}
 \\\\
 \textbf{Leapfrog Integrator}\\
-The leapfrog integrator calculates the positions and velocities of the bodies in a simulated system at interleaved timesteps. 
+The leapfrog integrator calculates the positions and velocities of the bodies in a simulated system at interleaved time-steps. 
 \begin{equation}
     \begin{split}
         x_{t+ 1} = x_t + v_{t+1/2} \Delta t \\
@@ -256,35 +239,34 @@ According to the literature (e.g. \cite{1995ApJ...443L..93H}) this can be rewrit
 \end{equation}
 One of the appealing characteristics of the leapfrog integrator is that it is time-symmetric. This means that if you let it run forward for a certain number of steps and then run it in reverse it should end up at the same initial starting state. This is supposed to improve its energy conservation properties.
 \\\\
-\textbf{Handling Close Encounters (not of the Third Kind)}\\
-In a gravitational simulation with discrete timesteps strange things can happen if two bodies get really close to each other. If two bodies are really close to each other they may experience a very strong force interaction. In reality this would happen for a very short time before the bodies either collide or they move away from each other again and experience a decreased amount of force.\\
-The n-body simulation that has been studied uses a collisionless n-body model. This means that the first option for close encounters (collision) is disregarded. A simulation with discrete timesteps will assume that the force experienced at the start of a timestep by a body will be experienced by that body during the whole timestep. This is not necessarily true for two close bodies in collisionless system. The bodies would only experience the strong force for a much shorter time than the timestep actually last and thus the force interaction gets overestimated. \\
-One option to improve accuracy of close encounters is to have the simulation run with smaller timesteps. This would however increase computational load and be inefficient if most simulation steps don't actually have encounters close enough to need a shorter timestep.\\
-Instead a dynamic timestep system can be devised. By looking at each gravitational interaction in the system, the resulting speeds and accelerations between every pair of bodies due to force interaction can be derived. It can then be calculated how long it would take to cover the distance between the two bodies based on their force interaction. If the length of time is shorter than the default timestep length, the timestep for the simulation is lowered for the next simulation step.\\ 
-This lowering of the timestep is done globally, for the entire simulation. The simulation is slowed down based on the closest interaction between two bodies in the system. There are algorithms that lower the timestep per body, but those have not been looked at.\\
-The Euler and Jerk integrators can run in a optional dynamic timestep mode. The leapfrog because of its interleaving nature cannot legitimately be run in a dynamic timestep mode in the version implemented and has thus only been run in a fixed timestep mode.\\
+\textbf{Handling Close Encounters }\\
+In a gravitational simulation with discrete time-steps strange things can happen if two bodies get really close to each other. If two bodies are really close to each other they may experience a very strong force interaction. In reality this would happen for a very short time before the bodies either collide or they move away from each other again and experience a decreased amount of force.\\
+The N-body simulation that has been studied uses a collisionless N-body model. This means that the first option for close encounters (collision) is disregarded. A simulation with discrete time-steps will assume that the force experienced at the start of a time-step by a body will be experienced by that body during the whole time-step. This is not necessarily true for two close bodies in collisionless system. The bodies would only experience the strong force for a much shorter time than the time-step actually last and thus the force interaction gets overestimated. \\
+One option to improve accuracy of close encounters is to have the simulation run with smaller time-steps. This would however increase computational load and be inefficient if most simulation steps don't actually have encounters close enough to need a shorter time-step.\\
+Instead a dynamic time-step system can be devised. By looking at each gravitational interaction in the system, the resulting speeds and accelerations between every pair of bodies due to force interaction can be derived. It can then be calculated how long it would take to cover the distance between the two bodies based on their force interaction. If the length of time is shorter than the default time-step length, the time-step for the simulation is lowered for the next simulation step.\\ 
+This lowering of the time-step is done globally, for the entire simulation. The simulation is slowed down based on the closest interaction between two bodies in the system. There are algorithms that lower the time-step per body, but those have not been looked at.\\
+The Euler and Jerk integrators can run in a optional dynamic time-step mode. The leapfrog because of its interleaving nature cannot legitimately be run in a dynamic time-step mode in the version implemented and has thus only been run in a fixed time-step mode.\\
 Additionally a softening factor has been added to the calculations of forces between two object. The calculation for acceleration (and jerk) divides by a power of the distance between two bodies, which means that if the distance gets close to zero the force gets multiplied by a very big number. To soften this and make sure that (as far as the force calculations go) can't get infinitely close a small $\epsilon$ is added to the distance between two bodies in these calculations.
 \subsection{Implementation}
 The simulation was implemented in a C++11 application, with SDL2 and OpenGL for the visualisation. Calculations have been done with single precision floating point math, though the application is programmed in such a way that it is relatively easy to change this to double precision floating point math later. \\\\
-The implementation uses sequential (i.e. non-parallel) code to implement the studied n-body simulation algorithms. Data was written to textfiles and analyzed using R and Gnuplot.
+The implementation uses sequential (i.e. non-parallel) code to implement the studied N-body simulation algorithms. Data was written to textfiles and analyzed using R and Gnuplot.
 \section{Experimental Results}
 \label{sec:results}
-The results of each model implementation are compared using the metrics designed in section~\ref{verification}. Using these methods allows us to compare the performance of each model. For all the energy comparison methods we used a fixed total \textit{model evaluation time}, i.e. we simulate 100 model minutes. Depending on the time-steps used in each method, this might take more or less iterations to calculate, meaning that the total simulation time increases. In
-section~\ref{sec:res:euler} compares the relative error of the Euler method using different time-steps. Also, section~\ref{sec:res:taylor} compares the improvement of adding an extra term in the Taylor expansion. And, section~\ref{sec:res:leapfrog} shows the results using the Leapfrog integrator and all the models are compared in the last section~\ref{sec:res:all}.
+The results of each model implementation are compared using the metrics designed in section~\ref{verification}. Using these methods allows us to compare the performance of each model. For all the experiments with energy comparisons we used a fixed total \textit{model evaluation time}, i.e. we simulate 100 model minutes. Depending on the time-steps used in each method, this might take more or less iterations to calculate, meaning that the total simulation time increases. Section~\ref{sec:res:euler} compares the relative error of the Euler method using different time-steps. Section~\ref{sec:res:taylor} compares the improvement of adding an extra term in the Taylor expansion. And, section~\ref{sec:res:leapfrog} shows the results using the Leapfrog integrator and all the models are compared in the last section~\ref{sec:res:all}.
 
 \subsection{Euler}
 \label{sec:res:euler}
-To verify our model, we have defined the energy metrics. In this experiment the relative energy metric as defined in section~\ref{XXX} is used. In total we have compared four different time-steps to evaluate the performance effect of an increasing/decreasing time-step. The time-steps used are $0.001, 0.01, 0.1, 1$ and figure~\ref{fig:euler} shows a plot of the relative energy error for the \textit{model simulation time}. 
+To verify our model, we have defined the energy metrics. In this experiment the relative energy metric as defined in equation~\ref{eq:energyerror} is used. In total we have compared four different time-step scales to evaluate the performance effect of an increasing/decreasing time-step scale. The time-step scale used are $0.001, 0.01, 0.1, 1$ and figure~\ref{fig:euler} shows a plot of the relative energy error for the \textit{model simulation time}. 
 \begin{figure}
     \includegraphics[width=0.9\textwidth]{euler_different_timesteps.png}
-    \caption{Relative energy error for the Euler integrator using different time-steps for a fixed total model simulation time.}
+    \caption{Relative energy error for the Euler integrator using different time-step scales for a fixed total model simulation time.}
     \label{fig:euler}
 \end{figure}
-As can be seen in figure~\ref{fig:euler} there is a spike around time 18 for time-step scale 1. This error has no apparent reason and in future time-steps it will decrease and stabilize around -1. Furthermore, it is interesting to see that with smaller time-step scales the total relative energy error increases faster. Meaning, that if we run the model for an infinite time the total error will explode and produce no meaning full results. This, while smaller time-step scales should increase the accuracy in terms of relative energy error. Therefore, we can conclude that the increase in accuracy does not outweighs the increase in iterations to complete the calculation. 
+As can be seen in figure~\ref{fig:euler} there is a spike around time 18 for time-step scale 1. This error has no apparent reason and in future time-steps it will decrease and stabilize around -1. Furthermore, it is interesting to see that with smaller time-step scales the total relative energy error increases faster. Meaning, that if we run the model for an infinite time the total error will explode and produce no meaning full results. The expectation may have been that smaller time-step scales should increase the accuracy in terms of relative energy error. Therefore, we can conclude that the increase in accuracy per time-step does not outweighs the increase in iterations to complete the calculation. 
 
-\subsection{Taylor}
+\subsection{Jerk Integrator}
 \label{sec:res:taylor}
-Using the same energy metrics defined in section~\ref{XX} we can do the same simulation for the Taylor approximation. We expect that adding an extra term in the Taylor expansion would increase our accuracy. And in figure~\ref{fig:taylor} we can see that indeed slower increase in relative energy error than using bigger time-step scales. However, all the time-step scale converge to -1 after about 20\% of the total model simulation time. Also, we noticed that the 0.001 time-step scale converges faster to the -1 relative energy error than the 0.0001 time-step scale. Here, we can observe that decreasing the time-step by 10 does not increase the accuracy enough to compensate for the increase in number of iterations. The could be due to machine-precision, but requires further investigation to be sure.
+Using the same energy metrics defined in equation~\ref{eq:energyerror} we can do the same simulation for the third order Taylor approximation. We expect that adding an extra term in the Taylor expansion would increase our accuracy. And in figure~\ref{fig:taylor} we can see that indeed slower increase in relative energy error than using bigger time-step scales. However, all the time-step scale converge to -1 after about 20\% of the total model simulation time. Also, we noticed that the 0.001 time-step scale converges faster to the -1 relative energy error than the 0.0001 time-step scale. Here, we can observe that decreasing the time-step by 10 does not increase the accuracy enough to compensate for the increase in number of iterations. The could be due to machine-precision, but requires further investigation to be sure.
 
 \begin{figure}
     \includegraphics[width=0.9\textwidth]{jerk_different_timesteps_truncated.png}
@@ -307,15 +289,15 @@ Each of the models is also run with the dynamic time-scale, which calculates the
 
 \subsection{All models}
 \label{sec:res:all}
-To compare all the models, i.e. Euler, Taylor and Leapfrog integrator, we setup up an experiment which uses the same time-step for all the models. The time-step is set at $0.01$ and figure~\ref{} shows the relative energy error for all models. Here we can clearly observe that the Taylor integrator gives the best results in terms of relative energy error. And as expected the Leapfrog and Euler integrator are approximately the same. 
+To compare all the models, i.e. Euler, Taylor and Leapfrog integrator, we setup up an experiment which uses the same time-step for all the models. The time-step is set at $0.01$ and figure~\ref{fig:energy_comparison} shows the relative energy error for all models. Here we can clearly observe that the Taylor integrator with jerk gives the best results in terms of relative energy error. And as expected the Leapfrog and Euler integrator are approximately the same. 
 \begin{figure}
     \includegraphics[width=0.9\textwidth]{constant_time.png}
     \caption{Relative energy error for the Euler,Taylor and Leapfrog integrator using fixed time-steps for a fixed total model simulation time.}
-    \label{fig:leapfrog}
+    \label{fig:energy_comparison}
 \end{figure}
 However, the Taylor integrator comes with extra costs in computation time as can be seen in figure~\ref{fig:time}. The calculation time for calculating one extra Taylor term, i.e. the jerk, doubles the total computation time. Also, the figure shows that the increase in bodies has a quadratic behavior which is to be expected with $n^2$ complexity in the Euler integrator. 
 \begin{figure}
-    \includegraphics[width=0.9\textwidth]{constant_time.png}
+    \includegraphics[width=0.9\textwidth]{time_bodies.png}
     \caption{Computation time to finish calculating the total model simulation time for a given number of bodies.}
     \label{fig:time}
 \end{figure}
@@ -325,7 +307,7 @@ However, the Taylor integrator comes with extra costs in computation time as can
 We have simulated different integrators and found a metric to compare the different models with each other. However, there is not one best model to select. Depending on the intentions of the simulation different models might be more applicable. For example, when speed has more priority than accuracy the Euler model might be more appropriate. Nevertheless, this research shows the complex considerations you have to take into account to build a simulation model. Also, that theoretical improvements do not always lead to actual improvements in a computer simulation. 
 
 \section{Future work}
-For future work we would like to recommend to try a time-step scale for each body, meaning that close encounters have smaller time-step scale than other bodies. This should lead to a smaller energy error while not slowing down the whole process. Also, many calculations are suitable for parallelization to speed up the computing process. 
+For future work we would like to recommend to try a distinct time-step scale for each body, meaning that close encounters have smaller time-step scale than other bodies. This should lead to a smaller energy error while not slowing down the whole process. Also, many calculations are suitable for parallelization to speed up the computing process. 
 
 
 
