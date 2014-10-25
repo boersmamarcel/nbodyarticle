@@ -265,7 +265,8 @@ This lowering of the timestep is done globally, for the entire simulation. The s
 The Euler and Jerk integrators can run in a optional dynamic timestep mode. The leapfrog because of its interleaving nature cannot legitimately be run in a dynamic timestep mode in the version implemented and has thus only been run in a fixed timestep mode.\\
 Additionally a softening factor has been added to the calculations of forces between two object. The calculation for acceleration (and jerk) divides by a power of the distance between two bodies, which means that if the distance gets close to zero the force gets multiplied by a very big number. To soften this and make sure that (as far as the force calculations go) can't get infinitely close a small $\epsilon$ is added to the distance between two bodies in these calculations.
 \subsection{Implementation}
-attachment
+The simulation was implemented in a C++11 application, with SDL2 and OpenGL for the visualisation. Calculations have been done with single precision floating point math, though the application is programmed in such a way that it is relatively easy to change this to double precision floating point math later. \\\\
+The implementation uses sequential (i.e. non-parallel) code to implement the studied n-body simulation algorithms. Data was written to textfiles and analyzed using R and Gnuplot.
 \section{Experimental Results}
 \label{sec:results}
 The results of each model implementation are compared using the metrics designed in section~\ref{verification}. Using these methods allows us to compare the performance of each model. For all the energy comparison methods we used a fixed total \textit{model evaluation time}, i.e. we simulate 100 model minutes. Depending on the time-steps used in each method, this might take more or less iterations to calculate, meaning that the total simulation time increases. In
