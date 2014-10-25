@@ -257,9 +257,29 @@ Using the same energy metrics defined in section~\ref{XX} we can do the same sim
 
 \subsection{Leapfrog}
 \label{sec:res:leapfrog}
+Using the Leapfrog integrator, which is a slight modified Euler integrator, we should expect similar results. And as can be seen in figure~\ref{fig:leapfrog}. the relative energy error shows similar results as for the Euler approximation in figure~\ref{fig:euler}. However, the magnitude of the relative energy error is higher with the Leapfrog integrator at around time-step 18. This is probably due to the approximation of the in between time-steps which the Leapfrog integrator uses. Nevertheless, the results are relatively the same as the Euler approximation and does, at least in our simulation, lead to a decrease in relative energy error.
+
+\begin{figure}
+    \includegraphics[width=0.9\textwidth]{leapfrog_different_timesteps.png}
+    \caption{Relative energy error for the Leapfrog integrator using different time-steps for a fixed total model simulation time.}
+    \label{fig:leapfrog}
+\end{figure}
 
 \subsection{All models}
 \label{sec:res:all}
+To compare all the models, i.e. Euler, Taylor and Leapfrog integrator, we setup up an experiment which uses the same time-step for all the models. The time-step is set at $0.01$ and figure~\ref{} shows the relative energy error for all models. Here we can clearly observe that the Taylor integrator gives the best results in terms of relative energy error. And as expected the Leapfrog and Euler integrator are approximately the same. However, the Taylor approximation comes with extra costs in computation time which will be discussed next.
+
+\begin{figure}
+    \includegraphics[width=0.9\textwidth]{constant_time.png}
+    \caption{Relative energy error for the Euler,Taylor and Leapfrog integrator using fixed time-steps for a fixed total model simulation time.}
+    \label{fig:leapfrog}
+\end{figure}
+
+
+\subsection{Complexity}
+\label{sec:res:complexity}
+
+
 
 \section{Conclusions}
 \label{sec:conclusion}
