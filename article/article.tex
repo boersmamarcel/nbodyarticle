@@ -288,7 +288,7 @@ However, the Taylor integrator comes with extra costs in computation time as can
 We have simulated different integrators and found a metric to compare the different models with each other. However, there is not one best model to select. Depending on the intentions of the simulation different models might be more applicable. For example, when speed has more priority than accuracy the Euler model might be more appropriate. Nevertheless, this research shows the complex considerations you have to take into account to build a simulation model. Also, that theoretical improvements do not always lead to actual improvements in a computer simulation. 
 
 \section{Future work}
-
+For future work we would like to recommend to try a time-step scale for each body, meaning that close encounters have smaller time-step scale than other bodies. This should lead to a smaller energy error while not slowing down the whole process. Also, many calculations are suitable for parallelization to speed up the computing process. 
 
 
 
